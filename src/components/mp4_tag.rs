@@ -143,25 +143,29 @@ impl AudioTagEdit for Mp4Tag {
     }
 
     fn album_cover(&self) -> Option<Picture> {
-        use mp4ameta::Data::*;
-        self.inner.artwork().and_then(|data| match data {
-            Jpeg(d) => Some(Picture {
-                data: d,
+        use mp4ameta::ImgFmt::*;
+        self.inner.artwork().and_then(|data| match data.fmt {
+            Jpeg => Some(Picture {
+                data: data.data,
                 mime_type: MimeType::Jpeg,
             }),
-            Png(d) => Some(Picture {
-                data: d,
+            Png => Some(Picture {
+                data: data.data,
                 mime_type: MimeType::Png,
             }),
-            _ => None,
+            Bmp => Some(Picture {
+                data: data.data,
+                mime_type: MimeType::Bmp,
+            }),
         })
     }
     fn set_album_cover(&mut self, cover: Picture) {
         self.remove_album_cover();
         self.inner.add_artwork(match cover.mime_type {
-            MimeType::Png => mp4ameta::Data::Png(cover.data.to_owned()),
-            MimeType::Jpeg => mp4ameta::Data::Jpeg(cover.data.to_owned()),
-            _ => panic!("Only png and jpeg are supported in m4a"),
+            MimeType::Png => mp4ameta::Img::png(cover.data.to_owned()),
+            MimeType::Jpeg => mp4ameta::Img::jpeg(cover.data.to_owned()),
+            MimeType::Bmp => mp4ameta::Img::bmp(cover.data.to_owned()),
+            _ => panic!("Only png, jpeg and bmp are supported in m4a"),
         });
     }
 
@@ -204,14 +208,10 @@ impl AudioTagEdit for Mp4Tag {
         self.inner.remove_album();
     }
     fn remove_album_artist(&mut self) {
-        self.inner.remove_data(mp4ameta::atom::ALBUM_ARTIST);
         self.inner.remove_album_artists();
     }
     fn remove_album_cover(&mut self) {
-        self.inner.remove_artwork();
-    }
-    fn remove_track(&mut self) {
-        self.inner.remove_track(); // faster than removing separately
+        self.inner.remove_artworks();
     }
     fn remove_track_number(&mut self) {
         self.inner.remove_track_number();

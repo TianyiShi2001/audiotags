@@ -1,4 +1,5 @@
 use audiotags::*;
+use id3::TagLike;
 
 #[test]
 fn test_inner() {

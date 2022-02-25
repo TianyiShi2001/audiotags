@@ -2,6 +2,7 @@ use crate::*;
 use id3;
 
 pub use id3::Tag as Id3v2InnerTag;
+use id3::TagLike;
 
 impl_tag!(Id3v2Tag, Id3v2InnerTag, TagType::Id3v2);
 
@@ -89,8 +90,7 @@ impl AudioTagEdit for Id3v2Tag {
         self.inner.set_year(year)
     }
     fn remove_year(&mut self) {
-        self.inner.remove("TYER")
-        // self.inner.remove_year(); // TODO
+        self.inner.remove_year()
     }
 
     fn album_title(&self) -> Option<&str> {
@@ -127,7 +127,7 @@ impl AudioTagEdit for Id3v2Tag {
     }
     fn set_album_cover(&mut self, cover: Picture) {
         self.remove_album_cover();
-        self.inner.add_picture(id3::frame::Picture {
+        self.inner.add_frame(id3::frame::Picture {
             mime_type: String::from(cover.mime_type),
             picture_type: id3::frame::PictureType::CoverFront,
             description: "".to_owned(),
