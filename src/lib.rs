@@ -113,10 +113,13 @@ impl Tag {
                 //Workaround to upconvert Id3v1 tags to v2
                 let mut t = match Id3v2Tag::read_from_path(&path) {
                     Ok(t) => Ok(t),
-                    Err(e) => match e {
-                        Error::Id3TagError(_) => {
-                            Ok(Id3v2Tag::from(id3::v1::Tag::read_from_path(path)?))
-                        }
+                    Err(e) => match &e {
+                        Error::Id3TagError(ie) => match ie.kind {
+                            id3::ErrorKind::NoTag => {
+                                Ok(Id3v2Tag::from(id3::v1::Tag::read_from_path(path)?))
+                            }
+                            _ => Err(e),
+                        },
                         _ => Err(e),
                     },
                 }?;
