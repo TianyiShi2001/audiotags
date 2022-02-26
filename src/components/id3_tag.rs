@@ -1,6 +1,7 @@
 use crate::*;
 use id3;
 
+use id3::v1::Tag as Id3v1Tag;
 pub use id3::Tag as Id3v2InnerTag;
 use id3::TagLike;
 
@@ -43,6 +44,12 @@ impl<'a> From<AnyTag<'a>> for Id3v2Tag {
                 t
             },
         }
+    }
+}
+
+impl From<Id3v1Tag> for Id3v2Tag {
+    fn from(inp: Id3v1Tag) -> Self {
+        Id3v2Tag::from(Id3v2InnerTag::from(inp))
     }
 }
 

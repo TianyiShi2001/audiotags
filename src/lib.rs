@@ -110,7 +110,16 @@ impl Tag {
                 .as_str(),
         )?) {
             TagType::Id3v2 => Ok(Box::new({
-                let mut t = Id3v2Tag::read_from_path(path)?;
+                //Workaround to upconvert Id3v1 tags to v2
+                let mut t = match Id3v2Tag::read_from_path(&path) {
+                    Ok(t) => Ok(t),
+                    Err(e) => match e {
+                        Error::Id3TagError(_) => {
+                            Ok(Id3v2Tag::from(id3::v1::Tag::read_from_path(path)?))
+                        }
+                        _ => Err(e),
+                    },
+                }?;
                 t.set_config(self.config.clone());
                 t
             })),
