@@ -120,6 +120,10 @@ impl AudioTagEdit for Mp4Tag {
         self.inner.duration()
     }
 
+    fn set_duration(&mut self, duration: &str) {
+        //TODO
+    }
+
     fn album_title(&self) -> Option<&str> {
         self.inner.album()
     }

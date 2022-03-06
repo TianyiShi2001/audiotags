@@ -97,6 +97,11 @@ impl AudioTagEdit for FlacTag {
         Some((flac.total_samples / flac.sample_rate as u64) as f64)
     }
 
+    fn set_duration(&mut self, duration: &str) {
+        // TODO 
+        // self.inner.get_streaminfo().unwrap();
+    }
+
     fn album_title(&self) -> Option<&str> {
         self.get_first("ALBUM")
     }

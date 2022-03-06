@@ -1,4 +1,4 @@
-use std::slice::SliceIndex;
+use std::path;
 
 use crate::*;
 use id3;
@@ -101,6 +101,9 @@ impl AudioTagEdit for Id3v2Tag {
             Some(a) => Some(a as f64)
 
         }
+    }
+    fn set_duration(&mut self, duration: &str) {
+        self.inner.add_frame(id3::Frame::with_content("TLEN", id3::Content::Text(duration.to_string())));
     }
 
     fn album_title(&self) -> Option<&str> {
