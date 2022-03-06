@@ -1,5 +1,5 @@
 use crate::*;
-use metaflac;
+use metaflac::{self, block::StreamInfo};
 
 pub use metaflac::Tag as FlacInnerTag;
 
@@ -93,7 +93,8 @@ impl AudioTagEdit for FlacTag {
 
 
     fn duration(&self) -> Option<f64> {
-        None
+        let flac: &StreamInfo = self.inner.get_streaminfo().unwrap();
+        Some((flac.total_samples / flac.sample_rate as u64) as f64)
     }
 
     fn album_title(&self) -> Option<&str> {
