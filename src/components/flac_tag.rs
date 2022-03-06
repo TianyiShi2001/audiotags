@@ -98,8 +98,7 @@ impl AudioTagEdit for FlacTag {
     }
 
     fn set_duration(&mut self, duration: &str) {
-        // TODO 
-        // self.inner.get_streaminfo().unwrap();
+        // unimplemented!();
     }
 
     fn album_title(&self) -> Option<&str> {

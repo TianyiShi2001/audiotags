@@ -121,7 +121,7 @@ impl AudioTagEdit for Mp4Tag {
     }
 
     fn set_duration(&mut self, duration: &str) {
-        //TODO
+        // unimplemented!()
     }
 
     fn album_title(&self) -> Option<&str> {
