@@ -170,6 +170,13 @@ impl AudioTagEdit for FlacTag {
         self.set_first("TOTALDISCS", &v.to_string())
     }
 
+    fn genre(&self) -> Option<&str> {
+        self.get_first("GENRE")
+    }
+    fn set_genre(&mut self, v: &str) {
+        self.set_first("GENRE", v);
+    }
+
     fn remove_title(&mut self) {
         self.remove("TITLE");
     }
@@ -201,6 +208,9 @@ impl AudioTagEdit for FlacTag {
     }
     fn remove_total_discs(&mut self) {
         self.remove("TOTALDISCS");
+    }
+    fn remove_genre(&mut self) {
+        self.remove("GENRE");
     }
 }
 

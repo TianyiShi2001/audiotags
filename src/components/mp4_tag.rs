@@ -1,7 +1,7 @@
-use crate::*;
 use mp4ameta;
-
 pub use mp4ameta::Tag as Mp4InnerTag;
+
+use crate::*;
 
 impl_tag!(Mp4Tag, Mp4InnerTag, TagType::Mp4);
 
@@ -21,6 +21,7 @@ impl<'a> From<&'a Mp4Tag> for AnyTag<'a> {
         let (a, b) = inp.disc();
         let disc_number = a;
         let total_discs = b;
+        let genre = inp.genre();
         Self {
             config: inp.config.clone(),
             title,
@@ -33,6 +34,7 @@ impl<'a> From<&'a Mp4Tag> for AnyTag<'a> {
             total_tracks,
             disc_number,
             total_discs,
+            genre,
         }
     }
 }
@@ -191,6 +193,13 @@ impl AudioTagEdit for Mp4Tag {
         self.inner.set_total_discs(total_discs)
     }
 
+    fn genre(&self) -> Option<&str> {
+        self.inner.genre()
+    }
+    fn set_genre(&mut self, genre: &str) {
+        self.inner.set_genre(genre);
+    }
+
     fn remove_title(&mut self) {
         self.inner.remove_title();
     }
@@ -227,6 +236,9 @@ impl AudioTagEdit for Mp4Tag {
     }
     fn remove_total_discs(&mut self) {
         self.inner.remove_total_discs();
+    }
+    fn remove_genre(&mut self) {
+        self.inner.remove_genres();
     }
 }
 
