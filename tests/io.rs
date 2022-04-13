@@ -45,6 +45,12 @@ macro_rules! test_file {
             tags.remove_album_cover();
             assert!(tags.album_cover().is_none());
             tags.remove_album_cover();
+
+            tags.set_genre("foo song genre");
+            assert_eq!(tags.genre(), Some("foo song genre"));
+            tags.remove_genre();
+            assert!(tags.genre().is_none());
+            tags.remove_genre();
         }
     };
 }
