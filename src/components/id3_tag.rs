@@ -1,5 +1,5 @@
 use crate::*;
-use id3;
+use id3::{self, TagLike};
 
 pub use id3::Tag as Id3v2InnerTag;
 
@@ -13,6 +13,7 @@ impl<'a> From<&'a Id3v2Tag> for AnyTag<'a> {
             title: inp.title(),
             artists: inp.artists(),
             year: inp.year(),
+            duration: Some(inp.inner.duration().unwrap() as f64),
             album_title: inp.album_title(),
             album_artists: inp.album_artists(),
             album_cover: inp.album_cover(),
@@ -20,6 +21,7 @@ impl<'a> From<&'a Id3v2Tag> for AnyTag<'a> {
             total_tracks: inp.total_tracks(),
             disc_number: inp.disc_number(),
             total_discs: inp.total_discs(),
+            genre: inp.genre(),
         }
     }
 }
@@ -39,6 +41,7 @@ impl<'a> From<AnyTag<'a>> for Id3v2Tag {
                 inp.total_tracks().map(|v| t.set_total_tracks(v as u32));
                 inp.disc_number().map(|v| t.set_disc(v as u32));
                 inp.total_discs().map(|v| t.set_total_discs(v as u32));
+                inp.genre().map(|v| t.set_genre(v));
                 t
             },
         }
@@ -89,8 +92,10 @@ impl AudioTagEdit for Id3v2Tag {
         self.inner.set_year(year)
     }
     fn remove_year(&mut self) {
-        self.inner.remove("TYER")
-        // self.inner.remove_year(); // TODO
+        self.inner.remove_year();
+    }
+    fn duration(&self) -> Option<f64> {
+        self.inner.duration().map(|d| f64::from(d))
     }
 
     fn album_title(&self) -> Option<&str> {
@@ -127,7 +132,7 @@ impl AudioTagEdit for Id3v2Tag {
     }
     fn set_album_cover(&mut self, cover: Picture) {
         self.remove_album_cover();
-        self.inner.add_picture(id3::frame::Picture {
+        self.inner.add_frame(id3::frame::Picture {
             mime_type: String::from(cover.mime_type),
             picture_type: id3::frame::PictureType::CoverFront,
             description: "".to_owned(),
@@ -177,6 +182,16 @@ impl AudioTagEdit for Id3v2Tag {
     }
     fn remove_total_discs(&mut self) {
         self.inner.remove_total_discs();
+    }
+
+    fn genre(&self) -> Option<&str> {
+        self.inner.genre()
+    }
+    fn set_genre(&mut self, v: &str) {
+        self.inner.set_genre(v);
+    }
+    fn remove_genre(&mut self) {
+        self.inner.remove_genre();
     }
 }
 

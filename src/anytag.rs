@@ -6,6 +6,7 @@ pub struct AnyTag<'a> {
     pub title: Option<&'a str>,
     pub artists: Option<Vec<&'a str>>,
     pub year: Option<i32>,
+    pub duration: Option<f64>,
     pub album_title: Option<&'a str>,
     pub album_artists: Option<Vec<&'a str>>,
     pub album_cover: Option<Picture<'a>>,
@@ -13,6 +14,7 @@ pub struct AnyTag<'a> {
     pub total_tracks: Option<u16>,
     pub disc_number: Option<u16>,
     pub total_discs: Option<u16>,
+    pub genre:Option<&'a str>,
 }
 
 impl AudioTagConfig for AnyTag<'_> {
@@ -41,6 +43,12 @@ impl<'a> AnyTag<'a> {
     pub fn set_year(&mut self, year: i32) {
         self.year = Some(year);
     }
+    pub fn duration(&self) -> Option<f64> {
+        self.duration
+    }
+    pub fn set_duration(&mut self, duration: f64) {
+        self.duration = Some(duration);
+    }
     pub fn album_title(&self) -> Option<&str> {
         self.album_title.as_deref()
     }
@@ -58,6 +66,9 @@ impl<'a> AnyTag<'a> {
     }
     pub fn total_discs(&self) -> Option<u16> {
         self.total_tracks
+    }
+    pub fn genre(&self) -> Option<&str> {
+        self.genre.as_deref()
     }
 }
 
