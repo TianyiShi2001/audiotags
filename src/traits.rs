@@ -126,6 +126,10 @@ pub trait AudioTagEdit: AudioTagConfig {
     fn total_discs(&self) -> Option<u16>;
     fn set_total_discs(&mut self, total_discs: u16);
     fn remove_total_discs(&mut self);
+
+    fn genre(&self) -> Option<&str>;
+    fn set_genre(&mut self, genre:&str);
+    fn remove_genre(&mut self);
 }
 
 pub trait AudioTagWrite {

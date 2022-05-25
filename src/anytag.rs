@@ -14,6 +14,7 @@ pub struct AnyTag<'a> {
     pub total_tracks: Option<u16>,
     pub disc_number: Option<u16>,
     pub total_discs: Option<u16>,
+    pub genre:Option<&'a str>,
 }
 
 impl AudioTagConfig for AnyTag<'_> {
@@ -65,6 +66,9 @@ impl<'a> AnyTag<'a> {
     }
     pub fn total_discs(&self) -> Option<u16> {
         self.total_tracks
+    }
+    pub fn genre(&self) -> Option<&str> {
+        self.genre.as_deref()
     }
 }
 
