@@ -1,5 +1,5 @@
 use crate::*;
-use mp4ameta;
+use mp4ameta::{self, ImgFmt};
 
 pub use mp4ameta::Tag as Mp4InnerTag;
 
@@ -143,14 +143,13 @@ impl AudioTagEdit for Mp4Tag {
     }
 
     fn album_cover(&self) -> Option<Picture> {
-        use mp4ameta::Data::*;
-        self.inner.artwork().and_then(|data| match data {
-            Jpeg(d) => Some(Picture {
-                data: d,
+        self.inner.artwork().and_then(|data| match data.fmt {
+            ImgFmt::Jpeg => Some(Picture {
+                data: data.data,
                 mime_type: MimeType::Jpeg,
             }),
-            Png(d) => Some(Picture {
-                data: d,
+            ImgFmt::Png => Some(Picture {
+                data: data.data,
                 mime_type: MimeType::Png,
             }),
             _ => None,
@@ -159,8 +158,14 @@ impl AudioTagEdit for Mp4Tag {
     fn set_album_cover(&mut self, cover: Picture) {
         self.remove_album_cover();
         self.inner.add_artwork(match cover.mime_type {
-            MimeType::Png => mp4ameta::Data::Png(cover.data.to_owned()),
-            MimeType::Jpeg => mp4ameta::Data::Jpeg(cover.data.to_owned()),
+            MimeType::Png => mp4ameta::Img {
+                fmt: ImgFmt::Png,
+                data: cover.data.to_owned(),
+            },
+            MimeType::Jpeg => mp4ameta::Img {
+                fmt: ImgFmt::Jpeg,
+                data: cover.data.to_owned(),
+            },
             _ => panic!("Only png and jpeg are supported in m4a"),
         });
     }
@@ -204,11 +209,10 @@ impl AudioTagEdit for Mp4Tag {
         self.inner.remove_album();
     }
     fn remove_album_artist(&mut self) {
-        self.inner.remove_data(mp4ameta::atom::ALBUM_ARTIST);
         self.inner.remove_album_artists();
     }
     fn remove_album_cover(&mut self) {
-        self.inner.remove_artwork();
+        self.inner.remove_artworks();
     }
     fn remove_track(&mut self) {
         self.inner.remove_track(); // faster than removing separately

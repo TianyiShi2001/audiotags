@@ -11,7 +11,7 @@ repository = "https://github.com/TianyiShi2001/audiotags"
 
 [dependencies]
 id3 = "1.0.3"
-mp4ameta = "0.6"
+mp4ameta = "0.11.0"
 metaflac = "0.2"
 thiserror = "1.0.21"
 audiotags-dev-macro = {path = "./audiotags-dev-macro", version = "0.1.4"}
