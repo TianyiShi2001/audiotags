@@ -10,12 +10,12 @@ repository = "https://github.com/TianyiShi2001/audiotags"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-id3 = "0.5.1"
+id3 = "1.0.3"
 mp4ameta = "0.6"
 metaflac = "0.2"
 thiserror = "1.0.21"
 audiotags-dev-macro = {path = "./audiotags-dev-macro", version = "0.1.4"}
 
 [features]
-defualt = ['from']
+default = ['from']
 from = []
