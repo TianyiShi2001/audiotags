@@ -27,6 +27,7 @@ impl<'a> From<&'a FlacTag> for AnyTag<'a> {
         t.title = inp.title();
         t.artists = inp.artists();
         t.year = inp.year();
+        t.duration = inp.duration();
         t.album_title = inp.album_title();
         t.album_artists = inp.album_artists();
         t.album_cover = inp.album_cover();
@@ -88,6 +89,12 @@ impl AudioTagEdit for FlacTag {
     fn set_year(&mut self, year: i32) {
         self.set_first("DATE", &year.to_string());
         self.set_first("YEAR", &year.to_string());
+    }
+
+    fn duration(&self) -> Option<f64> {
+        self.inner
+            .get_streaminfo()
+            .map(|s| s.total_samples as f64 / f64::from(s.sample_rate))
     }
 
     fn album_title(&self) -> Option<&str> {

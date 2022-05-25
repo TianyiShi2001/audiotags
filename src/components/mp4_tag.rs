@@ -10,6 +10,7 @@ impl<'a> From<&'a Mp4Tag> for AnyTag<'a> {
         let title = inp.title();
         let artists = inp.artists().map(|i| i.into_iter().collect::<Vec<_>>());
         let year = inp.year();
+        let duration = inp.duration();
         let album_title = inp.album_title();
         let album_artists = inp
             .album_artists()
@@ -26,6 +27,7 @@ impl<'a> From<&'a Mp4Tag> for AnyTag<'a> {
             title,
             artists,
             year,
+            duration,
             album_title,
             album_cover,
             album_artists,
@@ -111,6 +113,11 @@ impl AudioTagEdit for Mp4Tag {
     }
     fn set_year(&mut self, year: i32) {
         self.inner.set_year(year.to_string())
+    }
+
+    // Return Option with duration in second
+    fn duration(&self) -> Option<f64> {
+        self.inner.duration().map(|d| d.as_secs_f64())
     }
 
     fn album_title(&self) -> Option<&str> {
