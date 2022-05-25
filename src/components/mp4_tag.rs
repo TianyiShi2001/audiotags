@@ -24,7 +24,7 @@ impl<'a> From<&'a Mp4Tag> for AnyTag<'a> {
         let total_discs = b;
         let genre = inp.genre();
         Self {
-            config: inp.config.clone(),
+            config: inp.config,
             title,
             artists,
             year,
@@ -44,20 +44,36 @@ impl<'a> From<&'a Mp4Tag> for AnyTag<'a> {
 impl<'a> From<AnyTag<'a>> for Mp4Tag {
     fn from(inp: AnyTag<'a>) -> Self {
         Self {
-            config: inp.config.clone(),
+            config: inp.config,
             inner: {
                 let mut t = mp4ameta::Tag::default();
-                inp.title().map(|v| t.set_title(v));
-                inp.artists()
-                    .map(|i| i.iter().for_each(|&a| t.add_artist(a)));
-                inp.year.map(|v| t.set_year(v.to_string()));
-                inp.album_title().map(|v| t.set_album(v));
-                inp.album_artists()
-                    .map(|i| i.iter().for_each(|&a| t.add_album_artist(a)));
-                inp.track_number().map(|v| t.set_track_number(v));
-                inp.total_tracks().map(|v| t.set_total_tracks(v));
-                inp.disc_number().map(|v| t.set_disc_number(v));
-                inp.total_discs().map(|v| t.set_total_discs(v));
+                if let Some(v) = inp.title() {
+                    t.set_title(v)
+                }
+                if let Some(i) = inp.artists() {
+                    i.iter().for_each(|&a| t.add_artist(a))
+                }
+                if let Some(v) = inp.year {
+                    t.set_year(v.to_string())
+                }
+                if let Some(v) = inp.album_title() {
+                    t.set_album(v)
+                }
+                if let Some(i) = inp.album_artists() {
+                    i.iter().for_each(|&a| t.add_album_artist(a))
+                }
+                if let Some(v) = inp.track_number() {
+                    t.set_track_number(v)
+                }
+                if let Some(v) = inp.total_tracks() {
+                    t.set_total_tracks(v)
+                }
+                if let Some(v) = inp.disc_number() {
+                    t.set_disc_number(v)
+                }
+                if let Some(v) = inp.total_discs() {
+                    t.set_total_discs(v)
+                }
                 t
             },
         }
@@ -100,7 +116,7 @@ impl AudioTagEdit for Mp4Tag {
             v.push(a);
             v
         });
-        if v.len() > 0 {
+        if !v.is_empty() {
             Some(v)
         } else {
             None
@@ -141,7 +157,7 @@ impl AudioTagEdit for Mp4Tag {
             v.push(a);
             v
         });
-        if v.len() > 0 {
+        if !v.is_empty() {
             Some(v)
         } else {
             None

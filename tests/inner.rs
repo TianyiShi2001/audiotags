@@ -1,4 +1,4 @@
-use audiotags::*;
+use audiotags2::*;
 use id3::TagLike;
 use std::fs;
 use tempfile::Builder;
@@ -39,7 +39,7 @@ fn test_inner() {
         second: None,
     };
 
-    id3tag_inner.set_date_recorded(timestamp.clone());
+    id3tag_inner.set_date_recorded(timestamp);
     id3tag_inner
         .write_to_path(tmp_path, id3::Version::Id3v24)
         .expect("Fail to write!");

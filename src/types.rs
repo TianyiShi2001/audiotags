@@ -64,7 +64,7 @@ pub struct Album<'a> {
 impl<'a> Album<'a> {
     pub fn with_title(title: &'a str) -> Self {
         Self {
-            title: title,
+            title,
             artist: None,
             cover: None,
         }

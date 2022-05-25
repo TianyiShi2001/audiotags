@@ -45,9 +45,9 @@ pub trait AudioTagEdit: AudioTagConfig {
         })
     }
     fn set_album(&mut self, album: Album) {
-        self.set_album_title(&album.title);
+        self.set_album_title(album.title);
         if let Some(artist) = album.artist {
-            self.set_album_artist(&artist)
+            self.set_album_artist(artist)
         } else {
             self.remove_album_artist()
         }
@@ -128,7 +128,7 @@ pub trait AudioTagEdit: AudioTagConfig {
     fn remove_total_discs(&mut self);
 
     fn genre(&self) -> Option<&str>;
-    fn set_genre(&mut self, genre:&str);
+    fn set_genre(&mut self, genre: &str);
     fn remove_genre(&mut self);
 }
 
