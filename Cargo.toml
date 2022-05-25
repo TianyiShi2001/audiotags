@@ -16,6 +16,9 @@ metaflac = "0.2"
 thiserror = "1.0.21"
 audiotags-dev-macro = {path = "./audiotags-dev-macro", version = "0.1.4"}
 
+[dev-dependencies]
+tempfile = "3.3.0"
+
 [features]
 default = ['from']
 from = []

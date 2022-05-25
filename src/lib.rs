@@ -59,7 +59,7 @@ pub use std::convert::{TryFrom, TryInto};
 ///
 /// # Examples
 ///
-/// ```
+/// ```no_run
 /// use audiotags::{Tag, TagType};
 /// // Guess the format by default
 /// let mut tag = Tag::new().read_from_path("assets/a.mp3").unwrap();
