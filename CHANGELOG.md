@@ -1,3 +1,7 @@
+## [0.3.1] 2022-05-25
+
+- Upgraded `id3` from 1.0.3 to 1.1.0
+
 ## [0.3.0] 2022-05-25
 
 - Added support for `duration`

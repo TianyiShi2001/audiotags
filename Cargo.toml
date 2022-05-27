@@ -1,16 +1,17 @@
 [package]
 name = "audiotags2"
-version = "0.3.0"
+version = "0.3.1"
 authors = ["Pierre de la Martinière <pierre.de.la.martiniere@gmail.com>"]
 edition = "2021"
 description = "Unified IO for different types of audio metadata (maintained fork)"
 license = "MIT"
 repository = "https://github.com/martpie/audiotags"
+keywords = ["id3", "tag", "tags", "audio", "audiotags"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-id3 = "1.0.3"
+id3 = "1.1.0"
 mp4ameta = "0.11.0"
 metaflac = "0.2.5"
 thiserror = "1.0.31"
