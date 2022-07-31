@@ -8,33 +8,56 @@ impl_tag!(FlacTag, FlacInnerTag, TagType::Flac);
 impl<'a> From<AnyTag<'a>> for FlacTag {
     fn from(inp: AnyTag<'a>) -> Self {
         let mut t = FlacTag::default();
-        inp.title().map(|v| t.set_title(v));
-        inp.artists_as_string().map(|v| t.set_artist(&v));
-        inp.year.map(|v| t.set_year(v));
-        inp.album_title().map(|v| t.set_album_title(v));
-        inp.album_artists_as_string().map(|v| t.set_artist(&v));
-        inp.track_number().map(|v| t.set_track_number(v));
-        inp.total_tracks().map(|v| t.set_total_tracks(v));
-        inp.disc_number().map(|v| t.set_disc_number(v));
-        inp.total_discs().map(|v| t.set_total_discs(v));
+        if let Some(v) = inp.title() {
+            t.set_title(v)
+        }
+        if let Some(v) = inp.artists_as_string() {
+            t.set_artist(&v)
+        }
+        if let Some(v) = inp.year {
+            t.set_year(v)
+        }
+        if let Some(v) = inp.album_title() {
+            t.set_album_title(v)
+        }
+        if let Some(v) = inp.album_artists_as_string() {
+            t.set_artist(&v)
+        }
+        if let Some(v) = inp.track_number() {
+            t.set_track_number(v)
+        }
+        if let Some(v) = inp.total_tracks() {
+            t.set_total_tracks(v)
+        }
+        if let Some(v) = inp.disc_number() {
+            t.set_disc_number(v)
+        }
+        if let Some(v) = inp.total_discs() {
+            t.set_total_discs(v)
+        }
         t
     }
 }
 
 impl<'a> From<&'a FlacTag> for AnyTag<'a> {
     fn from(inp: &'a FlacTag) -> Self {
-        let mut t = Self::default();
-        t.title = inp.title();
-        t.artists = inp.artists();
-        t.year = inp.year();
-        t.album_title = inp.album_title();
-        t.album_artists = inp.album_artists();
-        t.album_cover = inp.album_cover();
-        t.track_number = inp.track_number();
-        t.total_tracks = inp.total_tracks();
-        t.disc_number = inp.disc_number();
-        t.total_discs = inp.total_discs();
-        t
+        let tag = Self {
+            title: inp.title(),
+            artists: inp.artists(),
+            year: inp.year(),
+            duration: inp.duration(),
+            album_title: inp.album_title(),
+            album_artists: inp.album_artists(),
+            album_cover: inp.album_cover(),
+            track_number: inp.track_number(),
+            total_tracks: inp.total_tracks(),
+            disc_number: inp.disc_number(),
+            total_discs: inp.total_discs(),
+            genre: inp.genre(),
+            ..Self::default()
+        };
+
+        tag
     }
 }
 
@@ -90,6 +113,12 @@ impl AudioTagEdit for FlacTag {
         self.set_first("YEAR", &year.to_string());
     }
 
+    fn duration(&self) -> Option<f64> {
+        self.inner
+            .get_streaminfo()
+            .map(|s| s.total_samples as f64 / f64::from(s.sample_rate))
+    }
+
     fn album_title(&self) -> Option<&str> {
         self.get_first("ALBUM")
     }
@@ -107,8 +136,7 @@ impl AudioTagEdit for FlacTag {
     fn album_cover(&self) -> Option<Picture> {
         self.inner
             .pictures()
-            .filter(|&pic| matches!(pic.picture_type, metaflac::block::PictureType::CoverFront))
-            .next()
+            .find(|&pic| matches!(pic.picture_type, metaflac::block::PictureType::CoverFront))
             .and_then(|pic| {
                 Some(Picture {
                     data: &pic.data,
@@ -170,6 +198,13 @@ impl AudioTagEdit for FlacTag {
         self.set_first("TOTALDISCS", &v.to_string())
     }
 
+    fn genre(&self) -> Option<&str> {
+        self.get_first("GENRE")
+    }
+    fn set_genre(&mut self, v: &str) {
+        self.set_first("GENRE", v);
+    }
+
     fn remove_title(&mut self) {
         self.remove("TITLE");
     }
@@ -201,6 +236,9 @@ impl AudioTagEdit for FlacTag {
     }
     fn remove_total_discs(&mut self) {
         self.remove("TOTALDISCS");
+    }
+    fn remove_genre(&mut self) {
+        self.remove("GENRE");
     }
 }
 

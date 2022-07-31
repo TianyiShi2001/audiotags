@@ -35,6 +35,8 @@ pub trait AudioTagEdit: AudioTagConfig {
     fn set_year(&mut self, year: i32);
     fn remove_year(&mut self);
 
+    fn duration(&self) -> Option<f64>;
+
     fn album(&self) -> Option<Album<'_>> {
         self.album_title().map(|title| Album {
             title,
@@ -43,9 +45,9 @@ pub trait AudioTagEdit: AudioTagConfig {
         })
     }
     fn set_album(&mut self, album: Album) {
-        self.set_album_title(&album.title);
+        self.set_album_title(album.title);
         if let Some(artist) = album.artist {
-            self.set_album_artist(&artist)
+            self.set_album_artist(artist)
         } else {
             self.remove_album_artist()
         }
@@ -124,6 +126,10 @@ pub trait AudioTagEdit: AudioTagConfig {
     fn total_discs(&self) -> Option<u16>;
     fn set_total_discs(&mut self, total_discs: u16);
     fn remove_total_discs(&mut self);
+
+    fn genre(&self) -> Option<&str>;
+    fn set_genre(&mut self, genre: &str);
+    fn remove_genre(&mut self);
 }
 
 pub trait AudioTagWrite {

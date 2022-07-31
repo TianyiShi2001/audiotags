@@ -1,3 +1,15 @@
+## [0.3.1] 2022-05-25
+
+- Upgraded `id3` from 1.0.3 to 1.1.0
+
+## [0.3.0] 2022-05-25
+
+- Added support for `duration`
+- Added support for `genre`
+- Upgraded `id3` from 0.5.1 to 1.0.3
+- Upgrade `mp4ameta` from 0.6 to 0.11
+- Execute tests from tmp directory to avoid repo corruption
+
 ## [0.2.7182] 2020-10-29
 
 - Improve docs
