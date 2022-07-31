@@ -7,7 +7,7 @@ pub struct Config {
     pub parse_multiple_artists: bool,
 }
 
-impl<'a> Default for Config {
+impl Default for Config {
     fn default() -> Self {
         Self {
             sep_artist: ";",
