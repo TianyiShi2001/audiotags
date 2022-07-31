@@ -1,11 +1,9 @@
-# audiotags2
+# audiotags
 
-[![Crate](https://img.shields.io/crates/v/audiotags2.svg)](https://crates.io/crates/audiotags2)
-[![Crate](https://img.shields.io/crates/d/audiotags2.svg)](https://crates.io/crates/audiotags2)
-[![Crate](https://img.shields.io/crates/l/audiotags2.svg)](https://crates.io/crates/audiotags2)
-[![Documentation](https://docs.rs/audiotags2/badge.svg)](https://docs.rs/audiotags2/)
-
-`audiotags2` is a fork of [`audiotags`](https://crates.io/crates/audiotags2) which is currently unmaintained.
+[![Crate](https://img.shields.io/crates/v/audiotags.svg)](https://crates.io/crates/audiotags)
+[![Crate](https://img.shields.io/crates/d/audiotags.svg)](https://crates.io/crates/audiotags)
+[![Crate](https://img.shields.io/crates/l/audiotags.svg)](https://crates.io/crates/audiotags)
+[![Documentation](https://docs.rs/audiotags/badge.svg)](https://docs.rs/audiotags/)
 
 This crate makes it easier to parse, convert and write metadata (a.k.a tag) in audio files of different file types.
 
@@ -17,13 +15,13 @@ metadata in different file formats.
 
 ### Performance
 
-Using **audiotags2** incurs a little overhead due to vtables if you want to guess the metadata format
+Using **audiotags** incurs a little overhead due to vtables if you want to guess the metadata format
 (from file extension). Apart from this the performance is almost the same as directly calling function
 provided by those 'specialized' crates.
 
 No copies will be made if you only need to read and write metadata of one format. If you want to convert
-between tags, copying is unavoidable no matter if you use **audiotags2** or use getters and setters provided
-by specialized libraries. **audiotags2** is not making additional unnecessary copies.
+between tags, copying is unavoidable no matter if you use **audiotags** or use getters and setters provided
+by specialized libraries. **audiotags** is not making additional unnecessary copies.
 
 ### Supported Formats
 
