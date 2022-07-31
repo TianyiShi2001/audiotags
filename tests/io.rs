@@ -1,4 +1,4 @@
-use audiotags2::{MimeType, Picture, Tag};
+use audiotags::{MimeType, Picture, Tag};
 use std::ffi::OsString;
 use std::fs;
 use std::path::Path;
