@@ -1,10 +1,21 @@
 use audiotags::{MimeType, Picture, Tag};
+use std::ffi::OsString;
+use std::fs;
+use std::path::Path;
+use tempfile::Builder;
 
 macro_rules! test_file {
     ( $function:ident, $file:expr ) => {
         #[test]
         fn $function() {
-            let mut tags = Tag::default().read_from_path($file).unwrap();
+            let path = Path::new($file);
+            let mut suffix = OsString::from(".");
+            suffix.push(path.extension().unwrap());
+            let tmp = Builder::new().suffix(&suffix).tempfile().unwrap();
+            fs::copy($file, &tmp).unwrap();
+            let tmp_path = tmp.path();
+
+            let mut tags = Tag::default().read_from_path(tmp_path).unwrap();
             tags.set_title("foo title");
             assert_eq!(tags.title(), Some("foo title"));
             tags.remove_title();
@@ -37,7 +48,7 @@ macro_rules! test_file {
 
             let cover = Picture {
                 mime_type: MimeType::Jpeg,
-                data: &vec![0u8; 10],
+                data: &[0u8; 10],
             };
 
             tags.set_album_cover(cover.clone());
@@ -45,6 +56,12 @@ macro_rules! test_file {
             tags.remove_album_cover();
             assert!(tags.album_cover().is_none());
             tags.remove_album_cover();
+
+            tags.set_genre("foo song genre");
+            assert_eq!(tags.genre(), Some("foo song genre"));
+            tags.remove_genre();
+            assert!(tags.genre().is_none());
+            tags.remove_genre();
         }
     };
 }

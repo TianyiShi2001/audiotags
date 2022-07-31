@@ -1,5 +1,5 @@
 use crate::*;
-use id3;
+use id3::{self, TagLike};
 
 pub use id3::Tag as Id3v2InnerTag;
 
@@ -8,11 +8,12 @@ impl_tag!(Id3v2Tag, Id3v2InnerTag, TagType::Id3v2);
 impl<'a> From<&'a Id3v2Tag> for AnyTag<'a> {
     fn from(inp: &'a Id3v2Tag) -> Self {
         Self {
-            config: inp.config.clone(),
+            config: inp.config,
 
             title: inp.title(),
             artists: inp.artists(),
             year: inp.year(),
+            duration: Some(inp.inner.duration().unwrap() as f64),
             album_title: inp.album_title(),
             album_artists: inp.album_artists(),
             album_cover: inp.album_cover(),
@@ -20,6 +21,7 @@ impl<'a> From<&'a Id3v2Tag> for AnyTag<'a> {
             total_tracks: inp.total_tracks(),
             disc_number: inp.disc_number(),
             total_discs: inp.total_discs(),
+            genre: inp.genre(),
         }
     }
 }
@@ -27,18 +29,39 @@ impl<'a> From<&'a Id3v2Tag> for AnyTag<'a> {
 impl<'a> From<AnyTag<'a>> for Id3v2Tag {
     fn from(inp: AnyTag<'a>) -> Self {
         Self {
-            config: inp.config.clone(),
+            config: inp.config,
             inner: {
                 let mut t = id3::Tag::new();
-                inp.title().map(|v| t.set_title(v));
-                inp.artists_as_string().map(|v| t.set_artist(&v));
-                inp.year.map(|v| t.set_year(v));
-                inp.album_title().map(|v| t.set_album(v));
-                inp.album_artists_as_string().map(|v| t.set_artist(&v));
-                inp.track_number().map(|v| t.set_track(v as u32));
-                inp.total_tracks().map(|v| t.set_total_tracks(v as u32));
-                inp.disc_number().map(|v| t.set_disc(v as u32));
-                inp.total_discs().map(|v| t.set_total_discs(v as u32));
+                if let Some(v) = inp.title() {
+                    t.set_title(v)
+                }
+                if let Some(v) = inp.artists_as_string() {
+                    t.set_artist(&v)
+                }
+                if let Some(v) = inp.year {
+                    t.set_year(v)
+                }
+                if let Some(v) = inp.album_title() {
+                    t.set_album(v)
+                }
+                if let Some(v) = inp.album_artists_as_string() {
+                    t.set_artist(&v)
+                }
+                if let Some(v) = inp.track_number() {
+                    t.set_track(v as u32)
+                }
+                if let Some(v) = inp.total_tracks() {
+                    t.set_total_tracks(v as u32)
+                }
+                if let Some(v) = inp.disc_number() {
+                    t.set_disc(v as u32)
+                }
+                if let Some(v) = inp.total_discs() {
+                    t.set_total_discs(v as u32)
+                }
+                if let Some(v) = inp.genre() {
+                    t.set_genre(v)
+                }
                 t
             },
         }
@@ -54,10 +77,7 @@ impl<'a> std::convert::TryFrom<&'a id3::frame::Picture> for Picture<'a> {
             ..
         } = inp;
         let mime_type: MimeType = mime_type.as_str().try_into()?;
-        Ok(Self {
-            data: &data,
-            mime_type,
-        })
+        Ok(Self { data, mime_type })
     }
 }
 
@@ -89,8 +109,10 @@ impl AudioTagEdit for Id3v2Tag {
         self.inner.set_year(year)
     }
     fn remove_year(&mut self) {
-        self.inner.remove("TYER")
-        // self.inner.remove_year(); // TODO
+        self.inner.remove_year();
+    }
+    fn duration(&self) -> Option<f64> {
+        self.inner.duration().map(f64::from)
     }
 
     fn album_title(&self) -> Option<&str> {
@@ -116,8 +138,7 @@ impl AudioTagEdit for Id3v2Tag {
     fn album_cover(&self) -> Option<Picture> {
         self.inner
             .pictures()
-            .filter(|&pic| matches!(pic.picture_type, id3::frame::PictureType::CoverFront))
-            .next()
+            .find(|&pic| matches!(pic.picture_type, id3::frame::PictureType::CoverFront))
             .and_then(|pic| {
                 Some(Picture {
                     data: &pic.data,
@@ -127,7 +148,7 @@ impl AudioTagEdit for Id3v2Tag {
     }
     fn set_album_cover(&mut self, cover: Picture) {
         self.remove_album_cover();
-        self.inner.add_picture(id3::frame::Picture {
+        self.inner.add_frame(id3::frame::Picture {
             mime_type: String::from(cover.mime_type),
             picture_type: id3::frame::PictureType::CoverFront,
             description: "".to_owned(),
@@ -177,6 +198,16 @@ impl AudioTagEdit for Id3v2Tag {
     }
     fn remove_total_discs(&mut self) {
         self.inner.remove_total_discs();
+    }
+
+    fn genre(&self) -> Option<&str> {
+        self.inner.genre()
+    }
+    fn set_genre(&mut self, v: &str) {
+        self.inner.set_genre(v);
+    }
+    fn remove_genre(&mut self) {
+        self.inner.remove_genre();
     }
 }
 

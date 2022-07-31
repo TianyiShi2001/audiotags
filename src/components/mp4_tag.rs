@@ -1,5 +1,5 @@
 use crate::*;
-use mp4ameta;
+use mp4ameta::{self, ImgFmt};
 
 pub use mp4ameta::Tag as Mp4InnerTag;
 
@@ -10,6 +10,7 @@ impl<'a> From<&'a Mp4Tag> for AnyTag<'a> {
         let title = inp.title();
         let artists = inp.artists().map(|i| i.into_iter().collect::<Vec<_>>());
         let year = inp.year();
+        let duration = inp.duration();
         let album_title = inp.album_title();
         let album_artists = inp
             .album_artists()
@@ -21,11 +22,13 @@ impl<'a> From<&'a Mp4Tag> for AnyTag<'a> {
         let (a, b) = inp.disc();
         let disc_number = a;
         let total_discs = b;
+        let genre = inp.genre();
         Self {
-            config: inp.config.clone(),
+            config: inp.config,
             title,
             artists,
             year,
+            duration,
             album_title,
             album_cover,
             album_artists,
@@ -33,6 +36,7 @@ impl<'a> From<&'a Mp4Tag> for AnyTag<'a> {
             total_tracks,
             disc_number,
             total_discs,
+            genre,
         }
     }
 }
@@ -40,20 +44,36 @@ impl<'a> From<&'a Mp4Tag> for AnyTag<'a> {
 impl<'a> From<AnyTag<'a>> for Mp4Tag {
     fn from(inp: AnyTag<'a>) -> Self {
         Self {
-            config: inp.config.clone(),
+            config: inp.config,
             inner: {
                 let mut t = mp4ameta::Tag::default();
-                inp.title().map(|v| t.set_title(v));
-                inp.artists()
-                    .map(|i| i.iter().for_each(|&a| t.add_artist(a)));
-                inp.year.map(|v| t.set_year(v.to_string()));
-                inp.album_title().map(|v| t.set_album(v));
-                inp.album_artists()
-                    .map(|i| i.iter().for_each(|&a| t.add_album_artist(a)));
-                inp.track_number().map(|v| t.set_track_number(v));
-                inp.total_tracks().map(|v| t.set_total_tracks(v));
-                inp.disc_number().map(|v| t.set_disc_number(v));
-                inp.total_discs().map(|v| t.set_total_discs(v));
+                if let Some(v) = inp.title() {
+                    t.set_title(v)
+                }
+                if let Some(i) = inp.artists() {
+                    i.iter().for_each(|&a| t.add_artist(a))
+                }
+                if let Some(v) = inp.year {
+                    t.set_year(v.to_string())
+                }
+                if let Some(v) = inp.album_title() {
+                    t.set_album(v)
+                }
+                if let Some(i) = inp.album_artists() {
+                    i.iter().for_each(|&a| t.add_album_artist(a))
+                }
+                if let Some(v) = inp.track_number() {
+                    t.set_track_number(v)
+                }
+                if let Some(v) = inp.total_tracks() {
+                    t.set_total_tracks(v)
+                }
+                if let Some(v) = inp.disc_number() {
+                    t.set_disc_number(v)
+                }
+                if let Some(v) = inp.total_discs() {
+                    t.set_total_discs(v)
+                }
                 t
             },
         }
@@ -96,7 +116,7 @@ impl AudioTagEdit for Mp4Tag {
             v.push(a);
             v
         });
-        if v.len() > 0 {
+        if !v.is_empty() {
             Some(v)
         } else {
             None
@@ -111,6 +131,11 @@ impl AudioTagEdit for Mp4Tag {
     }
     fn set_year(&mut self, year: i32) {
         self.inner.set_year(year.to_string())
+    }
+
+    // Return Option with duration in second
+    fn duration(&self) -> Option<f64> {
+        self.inner.duration().map(|d| d.as_secs_f64())
     }
 
     fn album_title(&self) -> Option<&str> {
@@ -132,7 +157,7 @@ impl AudioTagEdit for Mp4Tag {
             v.push(a);
             v
         });
-        if v.len() > 0 {
+        if !v.is_empty() {
             Some(v)
         } else {
             None
@@ -143,14 +168,13 @@ impl AudioTagEdit for Mp4Tag {
     }
 
     fn album_cover(&self) -> Option<Picture> {
-        use mp4ameta::Data::*;
-        self.inner.artwork().and_then(|data| match data {
-            Jpeg(d) => Some(Picture {
-                data: d,
+        self.inner.artwork().and_then(|data| match data.fmt {
+            ImgFmt::Jpeg => Some(Picture {
+                data: data.data,
                 mime_type: MimeType::Jpeg,
             }),
-            Png(d) => Some(Picture {
-                data: d,
+            ImgFmt::Png => Some(Picture {
+                data: data.data,
                 mime_type: MimeType::Png,
             }),
             _ => None,
@@ -159,8 +183,14 @@ impl AudioTagEdit for Mp4Tag {
     fn set_album_cover(&mut self, cover: Picture) {
         self.remove_album_cover();
         self.inner.add_artwork(match cover.mime_type {
-            MimeType::Png => mp4ameta::Data::Png(cover.data.to_owned()),
-            MimeType::Jpeg => mp4ameta::Data::Jpeg(cover.data.to_owned()),
+            MimeType::Png => mp4ameta::Img {
+                fmt: ImgFmt::Png,
+                data: cover.data.to_owned(),
+            },
+            MimeType::Jpeg => mp4ameta::Img {
+                fmt: ImgFmt::Jpeg,
+                data: cover.data.to_owned(),
+            },
             _ => panic!("Only png and jpeg are supported in m4a"),
         });
     }
@@ -191,6 +221,13 @@ impl AudioTagEdit for Mp4Tag {
         self.inner.set_total_discs(total_discs)
     }
 
+    fn genre(&self) -> Option<&str> {
+        self.inner.genre()
+    }
+    fn set_genre(&mut self, genre: &str) {
+        self.inner.set_genre(genre);
+    }
+
     fn remove_title(&mut self) {
         self.inner.remove_title();
     }
@@ -204,11 +241,10 @@ impl AudioTagEdit for Mp4Tag {
         self.inner.remove_album();
     }
     fn remove_album_artist(&mut self) {
-        self.inner.remove_data(mp4ameta::atom::ALBUM_ARTIST);
         self.inner.remove_album_artists();
     }
     fn remove_album_cover(&mut self) {
-        self.inner.remove_artwork();
+        self.inner.remove_artworks();
     }
     fn remove_track(&mut self) {
         self.inner.remove_track(); // faster than removing separately
@@ -227,6 +263,9 @@ impl AudioTagEdit for Mp4Tag {
     }
     fn remove_total_discs(&mut self) {
         self.inner.remove_total_discs();
+    }
+    fn remove_genre(&mut self) {
+        self.inner.remove_genres();
     }
 }
 
