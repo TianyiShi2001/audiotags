@@ -136,7 +136,10 @@ impl Tag {
             config,
         }
     }
-    pub fn read_from_path(&self, path: impl AsRef<Path>) -> crate::Result<Box<dyn AudioTag + Send + Sync>> {
+    pub fn read_from_path(
+        &self,
+        path: impl AsRef<Path>,
+    ) -> crate::Result<Box<dyn AudioTag + Send + Sync>> {
         match self.tag_type.unwrap_or(TagType::try_from_ext(
             path.as_ref()
                 .extension()

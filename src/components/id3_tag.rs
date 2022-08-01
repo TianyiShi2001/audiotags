@@ -130,7 +130,7 @@ impl AudioTagEdit for Id3v2Tag {
             day: None,
             hour: None,
             minute: None,
-            second: None
+            second: None,
         });
     }
     fn remove_year(&mut self) {
