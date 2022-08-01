@@ -89,12 +89,18 @@ impl AudioTagEdit for FlacTag {
     fn set_title(&mut self, title: &str) {
         self.set_first("TITLE", title);
     }
+    fn remove_title(&mut self) {
+        self.remove("TITLE");
+    }
 
     fn artist(&self) -> Option<&str> {
         self.get_first("ARTIST")
     }
     fn set_artist(&mut self, artist: &str) {
         self.set_first("ARTIST", artist)
+    }
+    fn remove_artist(&mut self) {
+        self.remove("ARTIST");
     }
 
     fn year(&self) -> Option<i32> {
@@ -113,6 +119,10 @@ impl AudioTagEdit for FlacTag {
         self.set_first("DATE", &year.to_string());
         self.set_first("YEAR", &year.to_string());
     }
+    fn remove_year(&mut self) {
+        self.remove("YEAR");
+        self.remove("DATE");
+    }
 
     fn duration(&self) -> Option<f64> {
         self.inner
@@ -126,12 +136,18 @@ impl AudioTagEdit for FlacTag {
     fn set_album_title(&mut self, title: &str) {
         self.set_first("ALBUM", title)
     }
+    fn remove_album_title(&mut self) {
+        self.remove("ALBUM");
+    }
 
     fn album_artist(&self) -> Option<&str> {
         self.get_first("ALBUMARTIST")
     }
     fn set_album_artist(&mut self, v: &str) {
         self.set_first("ALBUMARTIST", v)
+    }
+    fn remove_album_artist(&mut self) {
+        self.remove("ALBUMARTIST");
     }
 
     fn album_cover(&self) -> Option<Picture> {
@@ -151,6 +167,10 @@ impl AudioTagEdit for FlacTag {
         let picture_type = metaflac::block::PictureType::CoverFront;
         self.inner
             .add_picture(mime, picture_type, (cover.data).to_owned());
+    }
+    fn remove_album_cover(&mut self) {
+        self.inner
+            .remove_picture_type(metaflac::block::PictureType::CoverFront)
     }
 
     fn composer(&self) -> Option<&str> {
@@ -173,6 +193,9 @@ impl AudioTagEdit for FlacTag {
     fn set_track_number(&mut self, v: u16) {
         self.set_first("TRACKNUMBER", &v.to_string())
     }
+    fn remove_track_number(&mut self) {
+        self.remove("TRACKNUMBER");
+    }
 
     // ! not standard
     fn total_tracks(&self) -> Option<u16> {
@@ -185,6 +208,9 @@ impl AudioTagEdit for FlacTag {
     fn set_total_tracks(&mut self, v: u16) {
         self.set_first("TOTALTRACKS", &v.to_string())
     }
+    fn remove_total_tracks(&mut self) {
+        self.remove("TOTALTRACKS");
+    }
 
     fn disc_number(&self) -> Option<u16> {
         if let Some(Ok(n)) = self.get_first("DISCNUMBER").map(|x| x.parse::<u16>()) {
@@ -195,6 +221,9 @@ impl AudioTagEdit for FlacTag {
     }
     fn set_disc_number(&mut self, v: u16) {
         self.set_first("DISCNUMBER", &v.to_string())
+    }
+    fn remove_disc_number(&mut self) {
+        self.remove("DISCNUMBER");
     }
 
     // ! not standard
@@ -208,45 +237,15 @@ impl AudioTagEdit for FlacTag {
     fn set_total_discs(&mut self, v: u16) {
         self.set_first("TOTALDISCS", &v.to_string())
     }
+    fn remove_total_discs(&mut self) {
+        self.remove("TOTALDISCS");
+    }
 
     fn genre(&self) -> Option<&str> {
         self.get_first("GENRE")
     }
     fn set_genre(&mut self, v: &str) {
         self.set_first("GENRE", v);
-    }
-
-    fn remove_title(&mut self) {
-        self.remove("TITLE");
-    }
-    fn remove_artist(&mut self) {
-        self.remove("ARTIST");
-    }
-    fn remove_year(&mut self) {
-        self.remove("YEAR");
-        self.remove("DATE");
-    }
-    fn remove_album_title(&mut self) {
-        self.remove("ALBUM");
-    }
-    fn remove_album_artist(&mut self) {
-        self.remove("ALBUMARTIST");
-    }
-    fn remove_album_cover(&mut self) {
-        self.inner
-            .remove_picture_type(metaflac::block::PictureType::CoverFront)
-    }
-    fn remove_track_number(&mut self) {
-        self.remove("TRACKNUMBER");
-    }
-    fn remove_total_tracks(&mut self) {
-        self.remove("TOTALTRACKS");
-    }
-    fn remove_disc_number(&mut self) {
-        self.remove("DISCNUMBER");
-    }
-    fn remove_total_discs(&mut self) {
-        self.remove("TOTALDISCS");
     }
     fn remove_genre(&mut self) {
         self.remove("GENRE");
