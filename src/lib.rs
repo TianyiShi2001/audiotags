@@ -105,7 +105,7 @@ pub use std::convert::{TryFrom, TryInto};
 /// // you can specify the tag type (but when you want to do this, also consider directly using the concrete type)
 /// let tag = Tag::new().with_tag_type(TagType::Mp4).read_from_path("assets/a.m4a").unwrap();
 /// assert_eq!(tag.title(), Some("Foo"));
-/// # }
+/// # Ok(()) }
 /// ```
 #[derive(Default)]
 pub struct Tag {
