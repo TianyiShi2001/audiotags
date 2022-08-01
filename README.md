@@ -5,7 +5,7 @@
 [![Crate](https://img.shields.io/crates/l/audiotags.svg)](https://crates.io/crates/audiotags)
 [![Documentation](https://docs.rs/audiotags/badge.svg)](https://docs.rs/audiotags/)
 
-This crate makes it easier to parse, convert and write metadata (a.k.a tag) in audio files of different file types.
+This crate makes it easier to parse, convert and write metadata (a.k.a. tag) in audio files of different file types.
 
 This crate aims to provide a unified trait for parsers and writers of different audio file formats.
 This means that you can parse tags in mp3, flac, and m4a files with a single function: `Tag::default().
@@ -25,8 +25,8 @@ by specialized libraries. **audiotags** is not making additional unnecessary cop
 
 ### Supported Formats
 
-| File Fomat    | Metadata Format       | backend                                                     |
-| ------------- | --------------------- | ----------------------------------------------------------- |
+| File Format   | Metadata Format       | backend                                                     |
+|---------------|-----------------------|-------------------------------------------------------------|
 | `mp3`         | id3v2.4               | [**id3**](https://github.com/polyfloyd/rust-id3)            |
 | `m4a/mp4/...` | MPEG-4 audio metadata | [**mp4ameta**](https://github.com/Saecki/rust-mp4ameta)     |
 | `flac`        | Vorbis comment        | [**metaflac**](https://github.com/jameshurst/rust-metaflac) |
