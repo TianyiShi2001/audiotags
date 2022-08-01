@@ -138,7 +138,7 @@ impl Tag {
         match self.tag_type.unwrap_or(TagType::try_from_ext(
             path.as_ref()
                 .extension()
-                .unwrap()
+                .ok_or(Error::UnknownFileExtension(String::new()))?
                 .to_string_lossy()
                 .to_string()
                 .to_lowercase()
