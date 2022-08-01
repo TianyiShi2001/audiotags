@@ -1,5 +1,5 @@
 use crate::*;
-use id3::{self, TagLike};
+use id3::{self, Content, Frame, TagLike};
 
 pub use id3::Tag as Id3v2InnerTag;
 
@@ -22,6 +22,7 @@ impl<'a> From<&'a Id3v2Tag> for AnyTag<'a> {
             disc_number: inp.disc_number(),
             total_discs: inp.total_discs(),
             genre: inp.genre(),
+            composer: inp.composer(),
         }
     }
 }
@@ -158,6 +159,20 @@ impl AudioTagEdit for Id3v2Tag {
     fn remove_album_cover(&mut self) {
         self.inner
             .remove_picture_by_type(id3::frame::PictureType::CoverFront);
+    }
+
+    fn composer(&self) -> Option<&str> {
+        if let Some(Content::Text(text)) = self.inner.get("TCOM").map(Frame::content) {
+            return Some(text);
+        }
+
+        None
+    }
+    fn set_composer(&mut self, composer: String) {
+        self.inner.add_frame(Frame::text("TCOM", composer));
+    }
+    fn remove_composer(&mut self) {
+        self.inner.remove("TCOM");
     }
 
     fn track_number(&self) -> Option<u16> {

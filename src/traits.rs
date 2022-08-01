@@ -87,6 +87,10 @@ pub trait AudioTagEdit: AudioTagConfig {
     fn set_album_cover(&mut self, cover: Picture);
     fn remove_album_cover(&mut self);
 
+    fn composer(&self) -> Option<&str>;
+    fn set_composer(&mut self, composer: String);
+    fn remove_composer(&mut self);
+
     fn track(&self) -> (Option<u16>, Option<u16>) {
         (self.track_number(), self.total_tracks())
     }
