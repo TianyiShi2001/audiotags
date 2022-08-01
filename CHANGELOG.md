@@ -1,3 +1,15 @@
+## [0.4.1] 2022-08-02
+
+- Add AudioTagEdit::{set_,remove_}composer - PR: #19 fix #4 
+
+ * Thanks to @Serial-AtA and @ChousX
+
+## [0.4.0] 2022-08-01
+
+- Merged audiotags2 to audiotags - Party! - PR: #18
+
+* Thanks to @martpie
+
 ## [0.3.1] 2022-05-25
 
 - Upgraded `id3` from 1.0.3 to 1.1.0
