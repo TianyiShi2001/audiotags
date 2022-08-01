@@ -54,6 +54,7 @@ impl<'a> From<&'a FlacTag> for AnyTag<'a> {
             disc_number: inp.disc_number(),
             total_discs: inp.total_discs(),
             genre: inp.genre(),
+            composer: inp.composer(),
             ..Self::default()
         };
 
@@ -150,6 +151,16 @@ impl AudioTagEdit for FlacTag {
         let picture_type = metaflac::block::PictureType::CoverFront;
         self.inner
             .add_picture(mime, picture_type, (cover.data).to_owned());
+    }
+
+    fn composer(&self) -> Option<&str> {
+        self.get_first("COMPOSER")
+    }
+    fn set_composer(&mut self, composer: String) {
+        self.set_first("COMPOSER", &composer);
+    }
+    fn remove_composer(&mut self) {
+        self.remove("COMPOSER")
     }
 
     fn track_number(&self) -> Option<u16> {

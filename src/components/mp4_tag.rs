@@ -23,6 +23,7 @@ impl<'a> From<&'a Mp4Tag> for AnyTag<'a> {
         let disc_number = a;
         let total_discs = b;
         let genre = inp.genre();
+        let composer = inp.composer();
         Self {
             config: inp.config,
             title,
@@ -37,6 +38,7 @@ impl<'a> From<&'a Mp4Tag> for AnyTag<'a> {
             disc_number,
             total_discs,
             genre,
+            composer,
         }
     }
 }
@@ -193,6 +195,16 @@ impl AudioTagEdit for Mp4Tag {
             },
             _ => panic!("Only png and jpeg are supported in m4a"),
         });
+    }
+
+    fn composer(&self) -> Option<&str> {
+        self.inner.composer()
+    }
+    fn set_composer(&mut self, composer: String) {
+        self.inner.set_composer(composer);
+    }
+    fn remove_composer(&mut self) {
+        self.inner.remove_composers();
     }
 
     fn track_number(&self) -> Option<u16> {
