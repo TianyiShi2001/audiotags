@@ -53,7 +53,7 @@ impl<'a> Picture<'a> {
     }
 }
 
-/// A struct for representing an album for convinience.
+/// A struct for representing an album for convenience.
 #[derive(Debug)]
 pub struct Album<'a> {
     pub title: &'a str,

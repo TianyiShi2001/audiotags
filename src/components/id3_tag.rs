@@ -1,5 +1,5 @@
 use crate::*;
-use id3::{self, Content, Frame, TagLike};
+use id3::{self, Content, Frame, TagLike, Timestamp, Version};
 
 pub use id3::Tag as Id3v2InnerTag;
 
@@ -104,12 +104,37 @@ impl AudioTagEdit for Id3v2Tag {
     }
 
     fn year(&self) -> Option<i32> {
-        self.inner.year()
+        if self.inner.version() == Version::Id3v23 {
+            if let ret @ Some(_) = self.inner.year() {
+                return ret;
+            }
+        }
+
+        self.inner.date_recorded().map(|timestamp| timestamp.year)
     }
     fn set_year(&mut self, year: i32) {
-        self.inner.set_year(year)
+        if self.inner.version() == Version::Id3v23 {
+            self.inner.set_year(year);
+            return;
+        }
+
+        if let Some(mut timestamp) = self.inner.date_recorded() {
+            timestamp.year = year;
+            self.inner.set_date_recorded(timestamp);
+            return;
+        }
+
+        self.inner.set_date_recorded(Timestamp {
+            year,
+            month: None,
+            day: None,
+            hour: None,
+            minute: None,
+            second: None,
+        });
     }
     fn remove_year(&mut self) {
+        self.inner.remove_date_recorded();
         self.inner.remove_year();
     }
     fn duration(&self) -> Option<f64> {

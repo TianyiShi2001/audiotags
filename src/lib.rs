@@ -23,8 +23,8 @@
 //!
 //! ## Supported Formats
 //!
-//! | File Fomat    | Metadata Format       | backend                                                     |
-//! | ------------- | --------------------- | ----------------------------------------------------------- |
+//! | File Format   | Metadata Format       | backend                                                     |
+//! |---------------|-----------------------|-------------------------------------------------------------|
 //! | `mp3`         | id3v2.4               | [**id3**](https://github.com/polyfloyd/rust-id3)            |
 //! | `m4a/mp4/...` | MPEG-4 audio metadata | [**mp4ameta**](https://github.com/Saecki/rust-mp4ameta)     |
 //! | `flac`        | Vorbis comment        | [**metaflac**](https://github.com/jameshurst/rust-metaflac) |
@@ -94,16 +94,18 @@ pub use std::convert::{TryFrom, TryInto};
 /// ```no_run
 /// use audiotags::{Tag, TagType};
 ///
+/// # fn main() -> audiotags::Result<()> {
 /// // Guess the format by default
 /// let mut tag = Tag::new().read_from_path("assets/a.mp3").unwrap();
 /// tag.set_title("Foo");
 ///
 /// // you can convert the tag type and save the metadata to another file.
-/// tag.to_dyn_tag(TagType::Mp4).write_to_path("assets/a.m4a");
+/// tag.to_dyn_tag(TagType::Mp4).write_to_path("assets/a.m4a")?;
 ///
 /// // you can specify the tag type (but when you want to do this, also consider directly using the concrete type)
 /// let tag = Tag::new().with_tag_type(TagType::Mp4).read_from_path("assets/a.m4a").unwrap();
 /// assert_eq!(tag.title(), Some("Foo"));
+/// # Ok(()) }
 /// ```
 #[derive(Default)]
 pub struct Tag {
@@ -134,11 +136,14 @@ impl Tag {
             config,
         }
     }
-    pub fn read_from_path(&self, path: impl AsRef<Path>) -> crate::Result<Box<dyn AudioTag>> {
+    pub fn read_from_path(
+        &self,
+        path: impl AsRef<Path>,
+    ) -> crate::Result<Box<dyn AudioTag + Send + Sync>> {
         match self.tag_type.unwrap_or(TagType::try_from_ext(
             path.as_ref()
                 .extension()
-                .unwrap()
+                .ok_or(Error::UnknownFileExtension(String::new()))?
                 .to_string_lossy()
                 .to_string()
                 .to_lowercase()

@@ -1,6 +1,6 @@
 [package]
 name = "audiotags"
-version = "0.4.1"
+version = "0.5.0"
 authors = ["Tianyi <ShiTianyi2001@outlook.com>", "Pierre de la Martinière <pierre.de.la.martiniere@gmail.com>"]
 edition = "2021"
 description = "Unified IO for different types of audio metadata"
@@ -15,7 +15,7 @@ id3 = "1.1.0"
 mp4ameta = "0.11.0"
 metaflac = "0.2.5"
 thiserror = "1.0.31"
-audiotags-dev-macro = {path = "./audiotags-dev-macro", version = "0.1.4"}
+audiotags-dev-macro = {path = "./audiotags-dev-macro", version = "0.2.0"}
 
 [dev-dependencies]
 tempfile = "3.3.0"

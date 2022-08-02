@@ -70,8 +70,8 @@ macro_rules! impl_tag {
         }
 
         // From dyn AudioTag to wrapper (any type)
-        impl From<Box<dyn AudioTag>> for $tag {
-            fn from(inp: Box<dyn AudioTag>) -> Self {
+        impl From<Box<dyn AudioTag + Send + Sync>> for $tag {
+            fn from(inp: Box<dyn AudioTag + Send + Sync>) -> Self {
                 let mut inp = inp;
                 if let Some(t_refmut) = inp.to_any_mut().downcast_mut::<$tag>() {
                     let t = std::mem::replace(t_refmut, $tag::new()); // TODO: can we avoid creating the dummy tag?
@@ -85,8 +85,8 @@ macro_rules! impl_tag {
             }
         }
         // From dyn AudioTag to inner (any type)
-        impl std::convert::From<Box<dyn AudioTag>> for $inner {
-            fn from(inp: Box<dyn AudioTag>) -> Self {
+        impl std::convert::From<Box<dyn AudioTag + Send + Sync>> for $inner {
+            fn from(inp: Box<dyn AudioTag + Send + Sync>) -> Self {
                 let t: $tag = inp.into();
                 t.into()
             }
