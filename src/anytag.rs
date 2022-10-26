@@ -1,6 +1,6 @@
 use crate::*;
 
-#[derive(Default)]
+#[derive(Clone, Default)]
 pub struct AnyTag<'a> {
     pub config: Config,
     pub title: Option<&'a str>,
