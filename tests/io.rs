@@ -62,6 +62,12 @@ macro_rules! test_file {
             tags.remove_genre();
             assert!(tags.genre().is_none());
             tags.remove_genre();
+
+            tags.set_comment("foo song comment".to_string());
+            assert_eq!(tags.comment(), Some("foo song comment"));
+            tags.remove_comment();
+            assert!(tags.comment().is_none());
+            tags.remove_comment();
         }
     };
 }

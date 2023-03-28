@@ -23,6 +23,7 @@ impl<'a> From<&'a Id3v2Tag> for AnyTag<'a> {
             total_discs: inp.total_discs(),
             genre: inp.genre(),
             composer: inp.composer(),
+            comment: inp.comment(),
         }
     }
 }
@@ -248,6 +249,25 @@ impl AudioTagEdit for Id3v2Tag {
     }
     fn remove_genre(&mut self) {
         self.inner.remove_genre();
+    }
+
+    fn comment(&self) -> Option<&str> {
+        for comment in self.inner.comments() {
+            if comment.description.is_empty() {
+                return Some(comment.text.as_str());
+            }
+        }
+        None
+    }
+    fn set_comment(&mut self, comment: String) {
+        self.inner.add_frame(id3::frame::Comment {
+            lang: "".to_string(),
+            description: "".to_string(),
+            text: comment,
+        });
+    }
+    fn remove_comment(&mut self) {
+        self.inner.remove("COMM");
     }
 }
 

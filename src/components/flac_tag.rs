@@ -55,6 +55,7 @@ impl<'a> From<&'a FlacTag> for AnyTag<'a> {
             total_discs: inp.total_discs(),
             genre: inp.genre(),
             composer: inp.composer(),
+            comment: inp.comment(),
             ..Self::default()
         };
 
@@ -249,6 +250,16 @@ impl AudioTagEdit for FlacTag {
     }
     fn remove_genre(&mut self) {
         self.remove("GENRE");
+    }
+
+    fn comment(&self) -> Option<&str> {
+        self.get_first("COMMENT")
+    }
+    fn set_comment(&mut self, v: String) {
+        self.set_first("COMMENT", &v);
+    }
+    fn remove_comment(&mut self) {
+        self.remove("COMMENT");
     }
 }
 
