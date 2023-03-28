@@ -60,10 +60,10 @@ impl<'a> AnyTag<'a> {
         self.total_tracks
     }
     pub fn disc_number(&self) -> Option<u16> {
-        self.track_number
+        self.disc_number
     }
     pub fn total_discs(&self) -> Option<u16> {
-        self.total_tracks
+        self.total_discs
     }
     pub fn genre(&self) -> Option<&str> {
         self.genre
