@@ -24,6 +24,7 @@ impl<'a> From<&'a Mp4Tag> for AnyTag<'a> {
         let total_discs = b;
         let genre = inp.genre();
         let composer = inp.composer();
+        let comment = inp.comment();
         Self {
             config: inp.config,
             title,
@@ -39,6 +40,7 @@ impl<'a> From<&'a Mp4Tag> for AnyTag<'a> {
             total_discs,
             genre,
             composer,
+            comment,
         }
     }
 }
@@ -282,6 +284,16 @@ impl AudioTagEdit for Mp4Tag {
     }
     fn remove_genre(&mut self) {
         self.inner.remove_genres();
+    }
+
+    fn comment(&self) -> Option<&str> {
+        self.inner.comment()
+    }
+    fn set_comment(&mut self, comment: String) {
+        self.inner.set_comment(comment);
+    }
+    fn remove_comment(&mut self) {
+        self.inner.remove_comments();
     }
 }
 

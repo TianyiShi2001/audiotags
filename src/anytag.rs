@@ -16,6 +16,7 @@ pub struct AnyTag<'a> {
     pub total_discs: Option<u16>,
     pub genre: Option<&'a str>,
     pub composer: Option<&'a str>,
+    pub comment: Option<&'a str>,
 }
 
 impl AudioTagConfig for AnyTag<'_> {
@@ -70,6 +71,9 @@ impl<'a> AnyTag<'a> {
     }
     pub fn composer(&self) -> Option<&str> {
         self.composer
+    }
+    pub fn comment(&self) -> Option<&str> {
+        self.comment
     }
 }
 
