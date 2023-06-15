@@ -47,7 +47,7 @@ impl<'a> From<AnyTag<'a>> for Id3v2Tag {
                     t.set_album(v)
                 }
                 if let Some(v) = inp.album_artists_as_string() {
-                    t.set_artist(&v)
+                    t.set_album_artist(&v)
                 }
                 if let Some(v) = inp.track_number() {
                     t.set_track(v as u32)
