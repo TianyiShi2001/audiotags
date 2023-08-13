@@ -21,7 +21,7 @@ impl<'a> From<AnyTag<'a>> for FlacTag {
             t.set_album_title(v)
         }
         if let Some(v) = inp.album_artists_as_string() {
-            t.set_artist(&v)
+            t.set_album_artist(&v)
         }
         if let Some(v) = inp.track_number() {
             t.set_track_number(v)
