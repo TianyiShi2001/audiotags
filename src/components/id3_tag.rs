@@ -1,5 +1,5 @@
 use crate::*;
-use id3::{self, Content, Frame, TagLike, Timestamp, Version};
+use id3::{self, Content, Frame, TagLike, Timestamp};
 
 pub use id3::Tag as Id3v2InnerTag;
 
