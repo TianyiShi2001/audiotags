@@ -1,10 +1,14 @@
 use crate::*;
+use id3::Timestamp;
 
 #[derive(Default)]
 pub struct AnyTag<'a> {
     pub config: Config,
     pub title: Option<&'a str>,
     pub artists: Option<Vec<&'a str>>,
+    pub date_released: Option<Timestamp>,
+    pub original_date_released: Option<Timestamp>,
+    pub date_recorded: Option<Timestamp>,
     pub year: Option<i32>,
     pub duration: Option<f64>,
     pub album_title: Option<&'a str>,
@@ -39,6 +43,24 @@ impl<'a> AnyTag<'a> {
         self.artists.as_deref()
     }
     // set_artists; add_artist
+    pub fn date_released(&self) -> Option<Timestamp> {
+        self.date_released
+    }
+    pub fn set_date_released(&mut self, date_released: Timestamp) {
+        self.date_released = Some(date_released);
+    }
+    pub fn original_date_released(&self) -> Option<Timestamp> {
+        self.original_date_released
+    }
+    pub fn set_original_date_released(&mut self, original_date_released: Timestamp) {
+        self.original_date_released = Some(original_date_released);
+    }
+    pub fn date_recorded(&self) -> Option<Timestamp> {
+        self.date_recorded
+    }
+    pub fn set_date_recorded(&mut self, date_recorded: Timestamp) {
+        self.date_recorded = Some(date_recorded);
+    }
     pub fn year(&self) -> Option<i32> {
         self.year
     }

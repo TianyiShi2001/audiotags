@@ -1,5 +1,7 @@
 use crate::*;
+use id3::Timestamp;
 use metaflac;
+use std::str::FromStr;
 
 pub use metaflac::Tag as FlacInnerTag;
 
@@ -13,6 +15,15 @@ impl<'a> From<AnyTag<'a>> for FlacTag {
         }
         if let Some(v) = inp.artists_as_string() {
             t.set_artist(&v)
+        }
+        if let Some(v) = inp.date_released {
+            t.set_date_released(v)
+        }
+        if let Some(v) = inp.original_date_released {
+            t.set_original_date_released(v)
+        }
+        if let Some(v) = inp.date_recorded {
+            t.set_date_recorded(v)
         }
         if let Some(v) = inp.year {
             t.set_year(v)
@@ -44,6 +55,9 @@ impl<'a> From<&'a FlacTag> for AnyTag<'a> {
         let tag = Self {
             title: inp.title(),
             artists: inp.artists(),
+            date_released: inp.date_released(),
+            original_date_released: inp.original_date_released(),
+            date_recorded: inp.date_recorded(),
             year: inp.year(),
             duration: inp.duration(),
             album_title: inp.album_title(),
@@ -104,25 +118,65 @@ impl AudioTagEdit for FlacTag {
         self.remove("ARTIST");
     }
 
+    fn date_released(&self) -> Option<Timestamp> {
+        if let Some(Ok(timestamp)) = self.get_first("DATE").map(Timestamp::from_str) {
+            Some(timestamp)
+        } else {
+            None
+        }
+    }
+    fn set_date_released(&mut self, date_released: Timestamp) {
+        self.set_first("DATE", &date_released.to_string());
+    }
+    fn remove_date_released(&mut self) {
+        self.remove("DATE");
+    }
+
+    fn original_date_released(&self) -> Option<Timestamp> {
+        if let Some(Ok(timestamp)) = self.get_first("DATE").map(Timestamp::from_str) {
+            Some(timestamp)
+        } else {
+            None
+        }
+    }
+    fn set_original_date_released(&mut self, original_date_released: Timestamp) {
+        self.set_first("DATE", &original_date_released.to_string());
+    }
+    fn remove_original_date_released(&mut self) {
+        self.remove("DATE");
+    }
+
+    fn date_recorded(&self) -> Option<Timestamp> {
+        if let Some(Ok(timestamp)) = self.get_first("DATE").map(Timestamp::from_str) {
+            Some(timestamp)
+        } else {
+            None
+        }
+    }
+    fn set_date_recorded(&mut self, date_recorded: Timestamp) {
+        self.set_first("DATE", &date_recorded.to_string());
+    }
+    fn remove_date_recorded(&mut self) {
+        self.remove("DATE");
+    }
+
     fn year(&self) -> Option<i32> {
-        if let Some(Ok(y)) = self
+        if let Some(Ok(y)) = self.get_first("YEAR").map(|s| s.parse::<i32>()) {
+            Some(y)
+        } else if let Some(Ok(y)) = self
             .get_first("DATE")
             .map(|s| s.chars().take(4).collect::<String>().parse::<i32>())
         {
-            Some(y)
-        } else if let Some(Ok(y)) = self.get_first("YEAR").map(|s| s.parse::<i32>()) {
             Some(y)
         } else {
             None
         }
     }
     fn set_year(&mut self, year: i32) {
-        self.set_first("DATE", &year.to_string());
         self.set_first("YEAR", &year.to_string());
     }
     fn remove_year(&mut self) {
         self.remove("YEAR");
-        self.remove("DATE");
     }
 
     fn duration(&self) -> Option<f64> {

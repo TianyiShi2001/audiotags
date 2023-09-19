@@ -1,4 +1,5 @@
 use super::*;
+use id3::Timestamp;
 
 pub trait AudioTag: AudioTagEdit + AudioTagWrite + ToAnyTag {}
 
@@ -30,6 +31,18 @@ pub trait AudioTagEdit: AudioTagConfig {
     fn add_artist(&mut self, artist: &str) {
         self.set_artist(artist);
     }
+
+    fn original_date_released(&self) -> Option<Timestamp>;
+    fn set_original_date_released(&mut self, date: Timestamp);
+    fn remove_original_date_released(&mut self);
+
+    fn date_released(&self) -> Option<Timestamp>;
+    fn set_date_released(&mut self, date: Timestamp);
+    fn remove_date_released(&mut self);
+
+    fn date_recorded(&self) -> Option<Timestamp>;
+    fn set_date_recorded(&mut self, date: Timestamp);
+    fn remove_date_recorded(&mut self);
 
     fn year(&self) -> Option<i32>;
     fn set_year(&mut self, year: i32);

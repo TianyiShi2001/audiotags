@@ -1,5 +1,7 @@
 use crate::*;
+use id3::Timestamp;
 use mp4ameta::{self, ImgFmt};
+use std::str::FromStr;
 
 pub use mp4ameta::Tag as Mp4InnerTag;
 
@@ -9,6 +11,9 @@ impl<'a> From<&'a Mp4Tag> for AnyTag<'a> {
     fn from(inp: &'a Mp4Tag) -> Self {
         let title = inp.title();
         let artists = inp.artists().map(|i| i.into_iter().collect::<Vec<_>>());
+        let date_released = inp.date_released();
+        let original_date_released = inp.original_date_released();
+        let date_recorded = inp.date_recorded();
         let year = inp.year();
         let duration = inp.duration();
         let album_title = inp.album_title();
@@ -29,6 +34,9 @@ impl<'a> From<&'a Mp4Tag> for AnyTag<'a> {
             config: inp.config,
             title,
             artists,
+            date_released,
+            original_date_released,
+            date_recorded,
             year,
             duration,
             album_title,
@@ -135,6 +143,48 @@ impl AudioTagEdit for Mp4Tag {
     }
     fn add_artist(&mut self, v: &str) {
         self.inner.add_artist(v);
+    }
+
+    fn date_released(&self) -> Option<Timestamp> {
+        if let Some(Ok(date)) = self.inner.year().map(Timestamp::from_str) {
+            Some(date)
+        } else {
+            None
+        }
+    }
+    fn set_date_released(&mut self, date_released: Timestamp) {
+        self.inner.set_year(date_released.to_string())
+    }
+    fn remove_date_released(&mut self) {
+        self.inner.remove_year()
+    }
+
+    fn original_date_released(&self) -> Option<Timestamp> {
+        if let Some(Ok(date)) = self.inner.year().map(Timestamp::from_str) {
+            Some(date)
+        } else {
+            None
+        }
+    }
+    fn set_original_date_released(&mut self, original_date_released: Timestamp) {
+        self.inner.set_year(original_date_released.to_string())
+    }
+    fn remove_original_date_released(&mut self) {
+        self.inner.remove_year()
+    }
+
+    fn date_recorded(&self) -> Option<Timestamp> {
+        if let Some(Ok(date)) = self.inner.year().map(Timestamp::from_str) {
+            Some(date)
+        } else {
+            None
+        }
+    }
+    fn set_date_recorded(&mut self, date_recorded: Timestamp) {
+        self.inner.set_year(date_recorded.to_string())
+    }
+    fn remove_date_recorded(&mut self) {
+        self.inner.remove_year()
     }
 
     fn year(&self) -> Option<i32> {
