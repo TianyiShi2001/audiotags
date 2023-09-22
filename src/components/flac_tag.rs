@@ -16,13 +16,7 @@ impl<'a> From<AnyTag<'a>> for FlacTag {
         if let Some(v) = inp.artists_as_string() {
             t.set_artist(&v)
         }
-        if let Some(v) = inp.date_released {
-            t.set_date_released(v)
-        }
-        if let Some(v) = inp.original_date_released {
-            t.set_original_date_released(v)
-        }
-        if let Some(v) = inp.date_recorded {
+        if let Some(v) = inp.date {
             t.set_date_recorded(v)
         }
         if let Some(v) = inp.year {
@@ -55,9 +49,7 @@ impl<'a> From<&'a FlacTag> for AnyTag<'a> {
         let tag = Self {
             title: inp.title(),
             artists: inp.artists(),
-            date_released: inp.date_released(),
-            original_date_released: inp.original_date_released(),
-            date_recorded: inp.date_recorded(),
+            date: inp.date_released(),
             year: inp.year(),
             duration: inp.duration(),
             album_title: inp.album_title(),

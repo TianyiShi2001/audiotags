@@ -11,9 +11,7 @@ impl<'a> From<&'a Mp4Tag> for AnyTag<'a> {
     fn from(inp: &'a Mp4Tag) -> Self {
         let title = inp.title();
         let artists = inp.artists().map(|i| i.into_iter().collect::<Vec<_>>());
-        let date_released = inp.date_released();
-        let original_date_released = inp.original_date_released();
-        let date_recorded = inp.date_recorded();
+        let date = inp.date_recorded();
         let year = inp.year();
         let duration = inp.duration();
         let album_title = inp.album_title();
@@ -34,9 +32,7 @@ impl<'a> From<&'a Mp4Tag> for AnyTag<'a> {
             config: inp.config,
             title,
             artists,
-            date_released,
-            original_date_released,
-            date_recorded,
+            date,
             year,
             duration,
             album_title,
