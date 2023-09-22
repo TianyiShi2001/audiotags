@@ -177,6 +177,7 @@ impl AudioTagEdit for FlacTag {
     }
     fn remove_year(&mut self) {
         self.remove("YEAR");
+        self.remove("DATE");
     }
 
     fn duration(&self) -> Option<f64> {
