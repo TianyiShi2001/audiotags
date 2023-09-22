@@ -123,6 +123,7 @@ impl AudioTagEdit for Id3v2Tag {
         self.inner.set_year(year);
     }
     fn remove_year(&mut self) {
+        self.inner.remove_date_recorded();
         self.inner.remove_year();
     }
     fn duration(&self) -> Option<f64> {
