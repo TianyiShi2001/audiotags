@@ -32,17 +32,9 @@ pub trait AudioTagEdit: AudioTagConfig {
         self.set_artist(artist);
     }
 
-    fn original_date_released(&self) -> Option<Timestamp>;
-    fn set_original_date_released(&mut self, date: Timestamp);
-    fn remove_original_date_released(&mut self);
-
-    fn date_released(&self) -> Option<Timestamp>;
-    fn set_date_released(&mut self, date: Timestamp);
-    fn remove_date_released(&mut self);
-
-    fn date_recorded(&self) -> Option<Timestamp>;
-    fn set_date_recorded(&mut self, date: Timestamp);
-    fn remove_date_recorded(&mut self);
+    fn date(&self) -> Option<Timestamp>;
+    fn set_date(&mut self, date: Timestamp);
+    fn remove_date(&mut self);
 
     fn year(&self) -> Option<i32>;
     fn set_year(&mut self, year: i32);

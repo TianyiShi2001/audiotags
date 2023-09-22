@@ -12,7 +12,7 @@ impl<'a> From<&'a Id3v2Tag> for AnyTag<'a> {
 
             title: inp.title(),
             artists: inp.artists(),
-            date: inp.date_recorded(),
+            date: inp.date(),
             year: inp.year(),
             duration: Some(inp.inner.duration().unwrap() as f64),
             album_title: inp.album_title(),
@@ -106,33 +106,13 @@ impl AudioTagEdit for Id3v2Tag {
         self.inner.remove_artist();
     }
 
-    fn original_date_released(&self) -> Option<Timestamp> {
-        self.inner.original_date_released()
-    }
-    fn set_original_date_released(&mut self, timestamp: Timestamp) {
-        self.inner.set_original_date_released(timestamp)
-    }
-    fn remove_original_date_released(&mut self) {
-        self.inner.remove_original_date_released()
-    }
-
-    fn date_released(&self) -> Option<Timestamp> {
-        self.inner.date_released()
-    }
-    fn set_date_released(&mut self, timestamp: Timestamp) {
-        self.inner.set_date_released(timestamp)
-    }
-    fn remove_date_released(&mut self) {
-        self.inner.remove_date_released()
-    }
-
-    fn date_recorded(&self) -> Option<Timestamp> {
+    fn date(&self) -> Option<Timestamp> {
         self.inner.date_recorded()
     }
-    fn set_date_recorded(&mut self, timestamp: Timestamp) {
+    fn set_date(&mut self, timestamp: Timestamp) {
         self.inner.set_date_recorded(timestamp)
     }
-    fn remove_date_recorded(&mut self) {
+    fn remove_date(&mut self) {
         self.inner.remove_date_recorded()
     }
 

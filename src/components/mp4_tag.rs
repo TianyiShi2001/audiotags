@@ -11,7 +11,7 @@ impl<'a> From<&'a Mp4Tag> for AnyTag<'a> {
     fn from(inp: &'a Mp4Tag) -> Self {
         let title = inp.title();
         let artists = inp.artists().map(|i| i.into_iter().collect::<Vec<_>>());
-        let date = inp.date_recorded();
+        let date = inp.date();
         let year = inp.year();
         let duration = inp.duration();
         let album_title = inp.album_title();
@@ -141,45 +141,17 @@ impl AudioTagEdit for Mp4Tag {
         self.inner.add_artist(v);
     }
 
-    fn date_released(&self) -> Option<Timestamp> {
+    fn date(&self) -> Option<Timestamp> {
         if let Some(Ok(date)) = self.inner.year().map(Timestamp::from_str) {
             Some(date)
         } else {
             None
         }
     }
-    fn set_date_released(&mut self, date_released: Timestamp) {
-        self.inner.set_year(date_released.to_string())
+    fn set_date(&mut self, date: Timestamp) {
+        self.inner.set_year(date.to_string())
     }
-    fn remove_date_released(&mut self) {
-        self.inner.remove_year()
-    }
-
-    fn original_date_released(&self) -> Option<Timestamp> {
-        if let Some(Ok(date)) = self.inner.year().map(Timestamp::from_str) {
-            Some(date)
-        } else {
-            None
-        }
-    }
-    fn set_original_date_released(&mut self, original_date_released: Timestamp) {
-        self.inner.set_year(original_date_released.to_string())
-    }
-    fn remove_original_date_released(&mut self) {
-        self.inner.remove_year()
-    }
-
-    fn date_recorded(&self) -> Option<Timestamp> {
-        if let Some(Ok(date)) = self.inner.year().map(Timestamp::from_str) {
-            Some(date)
-        } else {
-            None
-        }
-    }
-    fn set_date_recorded(&mut self, date_recorded: Timestamp) {
-        self.inner.set_year(date_recorded.to_string())
-    }
-    fn remove_date_recorded(&mut self) {
+    fn remove_date(&mut self) {
         self.inner.remove_year()
     }
 

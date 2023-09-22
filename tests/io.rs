@@ -30,32 +30,14 @@ macro_rules! test_file {
             assert!(tags.artist().is_none());
             tags.remove_artist();
 
-            tags.set_date_released(Timestamp::from_str("2020-05-22").unwrap());
+            tags.set_date(Timestamp::from_str("2020-05-22").unwrap());
             assert_eq!(
-                tags.date_released(),
+                tags.date(),
                 Some(Timestamp::from_str("2020-05-22").unwrap())
             );
-            tags.remove_date_released();
-            assert!(tags.date_released().is_none());
-            tags.remove_date_released();
-
-            tags.set_original_date_released(Timestamp::from_str("2020-05-22").unwrap());
-            assert_eq!(
-                tags.original_date_released(),
-                Some(Timestamp::from_str("2020-05-22").unwrap())
-            );
-            tags.remove_original_date_released();
-            assert!(tags.original_date_released().is_none());
-            tags.remove_original_date_released();
-
-            tags.set_date_recorded(Timestamp::from_str("2020-05-22").unwrap());
-            assert_eq!(
-                tags.date_recorded(),
-                Some(Timestamp::from_str("2020-05-22").unwrap())
-            );
-            tags.remove_date_recorded();
-            assert!(tags.date_recorded().is_none());
-            tags.remove_date_recorded();
+            tags.remove_date();
+            assert!(tags.date().is_none());
+            tags.remove_date();
 
             tags.set_year(2020);
             assert_eq!(tags.year(), Some(2020));

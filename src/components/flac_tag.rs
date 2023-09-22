@@ -17,7 +17,7 @@ impl<'a> From<AnyTag<'a>> for FlacTag {
             t.set_artist(&v)
         }
         if let Some(v) = inp.date {
-            t.set_date_recorded(v)
+            t.set_date(v)
         }
         if let Some(v) = inp.year {
             t.set_year(v)
@@ -49,7 +49,7 @@ impl<'a> From<&'a FlacTag> for AnyTag<'a> {
         let tag = Self {
             title: inp.title(),
             artists: inp.artists(),
-            date: inp.date_released(),
+            date: inp.date(),
             year: inp.year(),
             duration: inp.duration(),
             album_title: inp.album_title(),
@@ -110,45 +110,17 @@ impl AudioTagEdit for FlacTag {
         self.remove("ARTIST");
     }
 
-    fn date_released(&self) -> Option<Timestamp> {
+    fn date(&self) -> Option<Timestamp> {
         if let Some(Ok(timestamp)) = self.get_first("DATE").map(Timestamp::from_str) {
             Some(timestamp)
         } else {
             None
         }
     }
-    fn set_date_released(&mut self, date_released: Timestamp) {
-        self.set_first("DATE", &date_released.to_string());
+    fn set_date(&mut self, date: Timestamp) {
+        self.set_first("DATE", &date.to_string());
     }
-    fn remove_date_released(&mut self) {
-        self.remove("DATE");
-    }
-
-    fn original_date_released(&self) -> Option<Timestamp> {
-        if let Some(Ok(timestamp)) = self.get_first("DATE").map(Timestamp::from_str) {
-            Some(timestamp)
-        } else {
-            None
-        }
-    }
-    fn set_original_date_released(&mut self, original_date_released: Timestamp) {
-        self.set_first("DATE", &original_date_released.to_string());
-    }
-    fn remove_original_date_released(&mut self) {
-        self.remove("DATE");
-    }
-
-    fn date_recorded(&self) -> Option<Timestamp> {
-        if let Some(Ok(timestamp)) = self.get_first("DATE").map(Timestamp::from_str) {
-            Some(timestamp)
-        } else {
-            None
-        }
-    }
-    fn set_date_recorded(&mut self, date_recorded: Timestamp) {
-        self.set_first("DATE", &date_recorded.to_string());
-    }
-    fn remove_date_recorded(&mut self) {
+    fn remove_date(&mut self) {
         self.remove("DATE");
     }
 
