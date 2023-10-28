@@ -13,10 +13,7 @@ impl<'a> From<&'a Id3v2Tag> for AnyTag<'a> {
             title: inp.title(),
             artists: inp.artists(),
             year: inp.year(),
-            duration: match inp.inner.duration() {
-                Some(v) => Some(v as f64),
-                None => None,
-            }, // Some(inp.inner.duration().unwrap() as f64),
+            duration: inp.inner.duration().map(f64::from),
             album_title: inp.album_title(),
             album_artists: inp.album_artists(),
             album_cover: inp.album_cover(),
