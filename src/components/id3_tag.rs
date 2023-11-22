@@ -1,5 +1,5 @@
 use crate::*;
-use id3::{self, Content, Frame, TagLike, Timestamp, Version};
+use id3::{self, Content, Frame, TagLike, Timestamp};
 
 pub use id3::Tag as Id3v2InnerTag;
 
@@ -12,6 +12,7 @@ impl<'a> From<&'a Id3v2Tag> for AnyTag<'a> {
 
             title: inp.title(),
             artists: inp.artists(),
+            date: inp.date(),
             year: inp.year(),
             duration: inp.inner.duration().map(f64::from),
             album_title: inp.album_title(),
@@ -39,6 +40,9 @@ impl<'a> From<AnyTag<'a>> for Id3v2Tag {
                 }
                 if let Some(v) = inp.artists_as_string() {
                     t.set_artist(&v)
+                }
+                if let Some(v) = inp.date() {
+                    t.set_date_recorded(v)
                 }
                 if let Some(v) = inp.year {
                     t.set_year(v)
@@ -102,35 +106,21 @@ impl AudioTagEdit for Id3v2Tag {
         self.inner.remove_artist();
     }
 
-    fn year(&self) -> Option<i32> {
-        if self.inner.version() == Version::Id3v23 {
-            if let ret @ Some(_) = self.inner.year() {
-                return ret;
-            }
-        }
+    fn date(&self) -> Option<Timestamp> {
+        self.inner.date_recorded()
+    }
+    fn set_date(&mut self, timestamp: Timestamp) {
+        self.inner.set_date_recorded(timestamp)
+    }
+    fn remove_date(&mut self) {
+        self.inner.remove_date_recorded()
+    }
 
-        self.inner.date_recorded().map(|timestamp| timestamp.year)
+    fn year(&self) -> Option<i32> {
+        self.inner.year()
     }
     fn set_year(&mut self, year: i32) {
-        if self.inner.version() == Version::Id3v23 {
-            self.inner.set_year(year);
-            return;
-        }
-
-        if let Some(mut timestamp) = self.inner.date_recorded() {
-            timestamp.year = year;
-            self.inner.set_date_recorded(timestamp);
-            return;
-        }
-
-        self.inner.set_date_recorded(Timestamp {
-            year,
-            month: None,
-            day: None,
-            hour: None,
-            minute: None,
-            second: None,
-        });
+        self.inner.set_year(year);
     }
     fn remove_year(&mut self) {
         self.inner.remove_date_recorded();

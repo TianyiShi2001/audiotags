@@ -1,7 +1,9 @@
 use audiotags::{MimeType, Picture, Tag};
+use id3::Timestamp;
 use std::ffi::OsString;
 use std::fs;
 use std::path::Path;
+use std::str::FromStr;
 use tempfile::Builder;
 
 macro_rules! test_file {
@@ -27,6 +29,15 @@ macro_rules! test_file {
             tags.remove_artist();
             assert!(tags.artist().is_none());
             tags.remove_artist();
+
+            tags.set_date(Timestamp::from_str("2020-05-22").unwrap());
+            assert_eq!(
+                tags.date(),
+                Some(Timestamp::from_str("2020-05-22").unwrap())
+            );
+            tags.remove_date();
+            assert!(tags.date().is_none());
+            tags.remove_date();
 
             tags.set_year(2020);
             assert_eq!(tags.year(), Some(2020));

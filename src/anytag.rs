@@ -1,10 +1,12 @@
 use crate::*;
+use id3::Timestamp;
 
 #[derive(Default)]
 pub struct AnyTag<'a> {
     pub config: Config,
     pub title: Option<&'a str>,
     pub artists: Option<Vec<&'a str>>,
+    pub date: Option<Timestamp>,
     pub year: Option<i32>,
     pub duration: Option<f64>,
     pub album_title: Option<&'a str>,
@@ -39,6 +41,12 @@ impl<'a> AnyTag<'a> {
         self.artists.as_deref()
     }
     // set_artists; add_artist
+    pub fn date(&self) -> Option<Timestamp> {
+        self.date
+    }
+    pub fn set_date(&mut self, date: Timestamp) {
+        self.date = Some(date);
+    }
     pub fn year(&self) -> Option<i32> {
         self.year
     }
