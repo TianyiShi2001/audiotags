@@ -1,8 +1,22 @@
+## [0.5.0] 2023-11-22
+
+- Added support for getting/setting comment - PR: #27
+- Added full date capabilities - PR: #34
+- Fixed `Id3v2Tag::{*year}` methods - PR: #21 fix #9
+- Fixed incorrect access to track fields on disc getters - PR: #26
+- Fixed album artist getting copied to artist field - PR: #29
+- Fixed incorrect option handling for conversion of `ID3v2Tag` to `AnyTag` - PR: #37 fix #36
+- Changed `Tag::read_from_path` return type to `Result<Box<dyn AudioTag + Send + Sync>>` - PR: #21 fix #8
+- Removed `unwrap` in `Tag::read_from_path` - PR: #21 fix #7
+- Removed needless borrowed reference when getting `Picture` - PR: #28
+
+ * Thanks to @Serial-ATA, @cdown, @microtonez, @aybruh00, and @BSteffaniak
+
 ## [0.4.1] 2022-08-02
 
 - Add AudioTagEdit::{set_,remove_}composer - PR: #19 fix #4 
 
- * Thanks to @Serial-AtA and @ChousX
+ * Thanks to @Serial-ATA and @ChousX
 
 ## [0.4.0] 2022-08-01
 
