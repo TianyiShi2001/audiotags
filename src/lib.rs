@@ -61,7 +61,7 @@
 //! tag.write_to_path("test.mp3").expect("Fail to save");
 //! ```
 
-pub(crate) use audiotags_dev_macro::*;
+pub(crate) use audiotags_macro::*;
 
 pub mod anytag;
 pub use anytag::*;

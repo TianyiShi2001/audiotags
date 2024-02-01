@@ -1,5 +1,5 @@
 [package]
-name = "audiotags-dev-macro"
+name = "audiotags-macro"
 version = "0.2.0"
 authors = ["Tianyi <ShiTianyi2001@outlook.com>"]
 edition = "2021"
