@@ -86,3 +86,14 @@ macro_rules! test_file {
 test_file!(test_mp3, "assets/a.mp3");
 test_file!(test_m4a, "assets/a.m4a");
 test_file!(test_flac, "assets/a.flac");
+
+#[test]
+fn test_id3_style_track_number() {
+    // Verify that we can consume TRACKNUMER tags in the style of the
+    // ID3 TRCK tag.  This is non-standard (for Vorbis comments) but
+    // other tools (such as easytags) will read it (but, AFAIK, not
+    // write it).
+    let tags = Tag::default().read_from_path("assets/meep.flac").unwrap();
+    assert_eq!(tags.track_number(), Some(1));
+    assert_eq!(tags.total_tracks(), Some(6));
+}

@@ -204,12 +204,9 @@ impl AudioTagEdit for FlacTag {
     }
 
     fn track_number(&self) -> Option<u16> {
-        if let Some(Ok(n)) = self.get_first("TRACKNUMBER").map(|x| x.parse::<u16>()) {
-            Some(n)
-        } else {
-            None
-        }
+	self.track_number_pair().0
     }
+
     fn set_track_number(&mut self, v: u16) {
         self.set_first("TRACKNUMBER", &v.to_string())
     }
@@ -222,7 +219,8 @@ impl AudioTagEdit for FlacTag {
         if let Some(Ok(n)) = self.get_first("TOTALTRACKS").map(|x| x.parse::<u16>()) {
             Some(n)
         } else {
-            None
+	    // Support "NN/MM" in the style of ID3-style TRCK.
+            self.track_number_pair().1
         }
     }
     fn set_total_tracks(&mut self, v: u16) {
@@ -290,5 +288,20 @@ impl AudioTagWrite for FlacTag {
     fn write_to_path(&mut self, path: &str) -> crate::Result<()> {
         self.inner.write_to_path(path)?;
         Ok(())
+    }
+}
+
+impl FlacTag {
+    fn track_number_pair(&self) -> (Option<u16>, Option<u16>) {
+	if let Some(s) = self.get_first("TRACKNUMBER") {
+	    let mut parts = s.split("/").fuse().map(|t| t.parse().ok());
+	    // Manually unpack the first two items instead of using
+	    // collect() so that we can avoid allocating a Vec.
+	    let track = parts.next().flatten();
+	    let total = parts.next().flatten();
+	    (track, total)
+	} else {
+	    (None, None)
+	}
     }
 }
