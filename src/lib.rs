@@ -193,7 +193,7 @@ pub enum TagType {
 impl TagType {
     fn try_from_ext(ext: &str) -> crate::Result<Self> {
         match ext {
-                            "aif" | "aiff" | "mp3" | "wav" => Ok(Self::Id3v2),
+                            "aif" | "aiff" | "aifc" | "mp3" | "wav" => Ok(Self::Id3v2),
             "m4a" | "m4b" | "m4p" | "m4v" | "isom" | "mp4" => Ok(Self::Mp4),
                                                     "flac" => Ok(Self::Flac),
             p => Err(crate::Error::UnsupportedFormat(p.to_owned())),
