@@ -205,7 +205,7 @@ impl AudioTagEdit for Mp4Tag {
         self.inner.add_album_artist(v);
     }
 
-    fn album_cover(&self) -> Option<Picture> {
+    fn album_cover(&self) -> Option<Picture<'_>> {
         self.inner.artwork().and_then(|data| match data.fmt {
             ImgFmt::Jpeg => Some(Picture {
                 data: data.data,

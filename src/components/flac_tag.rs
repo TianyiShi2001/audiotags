@@ -170,7 +170,7 @@ impl AudioTagEdit for FlacTag {
         self.remove("ALBUMARTIST");
     }
 
-    fn album_cover(&self) -> Option<Picture> {
+    fn album_cover(&self) -> Option<Picture<'_>> {
         self.inner
             .pictures()
             .find(|&pic| matches!(pic.picture_type, metaflac::block::PictureType::CoverFront))
