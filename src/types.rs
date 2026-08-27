@@ -9,6 +9,21 @@ pub enum MimeType {
     Gif,
 }
 
+/// The types of date for the timestamp.
+/// Most of the time you will want to use `TimestampTag::Id3` as it is using the
+/// standard specifications. However when you are working with audio with
+/// unknown date format or non-ISO then you can use `TimestampTag::Unknown` as
+/// an escape hatch to get the original text and parse to your own format
+/// if needed.
+///
+/// - To use TimestampTag you need to enable the `raw-date` feature
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum TimestampTag {
+    Id3(id3::Timestamp),
+    #[cfg(feature = "raw-date")]
+    Unknown(String),
+}
+
 impl TryFrom<&str> for MimeType {
     type Error = crate::Error;
     fn try_from(inp: &str) -> crate::Result<Self> {

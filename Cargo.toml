@@ -26,3 +26,4 @@ readme-rustdocifier = "0.1.1"
 [features]
 default = ['from']
 from = []
+raw-date = []

@@ -1,4 +1,4 @@
-use audiotags::{MimeType, Picture, Tag};
+use audiotags::{MimeType, Picture, Tag, TimestampTag};
 use id3::Timestamp;
 use std::ffi::OsString;
 use std::fs;
@@ -30,7 +30,7 @@ macro_rules! test_file {
             assert!(tags.artist().is_none());
             tags.remove_artist();
 
-            tags.set_date(Timestamp::from_str("2020-05-22").unwrap());
+            tags.set_date(TimestampTag::Id3(Timestamp::from_str("2020-05-22").unwrap()));
             assert_eq!(
                 tags.date(),
                 Some(Timestamp::from_str("2020-05-22").unwrap())

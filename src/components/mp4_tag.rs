@@ -148,8 +148,18 @@ impl AudioTagEdit for Mp4Tag {
             None
         }
     }
-    fn set_date(&mut self, date: Timestamp) {
-        self.inner.set_year(date.to_string())
+    #[cfg(feature = "raw-date")]
+    fn date_raw(&self) -> Option<TimestampTag> {
+        self.inner
+            .year()
+            .map(|e| TimestampTag::Unknown(e.to_string()))
+    }
+    fn set_date(&mut self, date: TimestampTag) {
+        match date {
+            TimestampTag::Id3(date_fmt) => self.inner.set_year(date_fmt.to_string()),
+            #[cfg(feature = "raw-date")]
+            TimestampTag::Unknown(date_str) => self.inner.set_year(date_str.to_string()),
+        }
     }
     fn remove_date(&mut self) {
         self.inner.remove_year()

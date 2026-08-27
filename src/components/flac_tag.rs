@@ -17,7 +17,7 @@ impl<'a> From<AnyTag<'a>> for FlacTag {
             t.set_artist(&v)
         }
         if let Some(v) = inp.date {
-            t.set_date(v)
+            t.set_date(TimestampTag::Id3(v))
         }
         if let Some(v) = inp.year {
             t.set_year(v)
@@ -117,8 +117,17 @@ impl AudioTagEdit for FlacTag {
             None
         }
     }
-    fn set_date(&mut self, date: Timestamp) {
-        self.set_first("DATE", &date.to_string());
+    #[cfg(feature = "raw-date")]
+    fn date_raw(&self) -> Option<TimestampTag> {
+        self.get_first("DATE")
+            .map(|e| TimestampTag::Unknown(e.to_string()))
+    }
+    fn set_date(&mut self, date: TimestampTag) {
+        match date {
+            TimestampTag::Id3(date_fmt) => self.set_first("DATE", &date_fmt.to_string()),
+            #[cfg(feature = "raw-date")]
+            TimestampTag::Unknown(date_str) => self.set_first("DATE", &date_str.to_string()),
+        }
     }
     fn remove_date(&mut self) {
         self.remove("DATE");
