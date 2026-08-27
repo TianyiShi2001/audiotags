@@ -136,19 +136,46 @@ impl Tag {
             config,
         }
     }
+
+    /// Creates a brand new empty tag without reading from an existing file path.
+    pub fn empty(tag_type: TagType, config: Config) -> Box<dyn AudioTag + Send + Sync> {
+        match tag_type {
+            TagType::Id3v2 => Box::new({
+                let mut t = Id3v2Tag::new();
+                t.set_config(config);
+                t
+            }),
+            TagType::Mp4 => Box::new({
+                let mut t = Mp4Tag::new();
+                t.set_config(config);
+                t
+            }),
+            TagType::Flac => Box::new({
+                let mut t = FlacTag::new();
+                t.set_config(config);
+                t
+            }),
+        }
+    }
+
     pub fn read_from_path(
         &self,
         path: impl AsRef<Path>,
     ) -> crate::Result<Box<dyn AudioTag + Send + Sync>> {
-        match self.tag_type.unwrap_or(TagType::try_from_ext(
-            path.as_ref()
-                .extension()
-                .ok_or(Error::UnknownFileExtension(String::new()))?
-                .to_string_lossy()
-                .to_string()
-                .to_lowercase()
-                .as_str(),
-        )?) {
+        let tag_type = match self.tag_type {
+            Some(tag_type) => tag_type,
+            None => TagType::try_from_ext(
+                path.as_ref()
+                    .extension()
+                    .ok_or(Error::UnknownFileExtension(String::new()))?
+                    .to_string_lossy()
+                    .to_string()
+                    .to_lowercase()
+                    .as_str(),
+            )?,
+        };
+
+        match tag_type {
             TagType::Id3v2 => Ok(Box::new({
                 let mut t = Id3v2Tag::read_from_path(path)?;
                 t.set_config(self.config);
