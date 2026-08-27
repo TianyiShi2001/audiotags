@@ -12,7 +12,7 @@ keywords = ["id3", "tag", "tags", "audio", "audiotags"]
 
 [dependencies]
 id3 = "1.17.1"
-mp4ameta = "0.11.0"
+mp4ameta = "0.13.0"
 metaflac = "0.2.5"
 thiserror = "1.0.50"
 audiotags-macro = { version = "0.2", path = "./audiotags-macro" }
