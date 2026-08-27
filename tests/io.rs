@@ -91,3 +91,18 @@ macro_rules! test_file {
 test_file!(test_mp3, "assets/a.mp3");
 test_file!(test_m4a, "assets/a.m4a");
 test_file!(test_flac, "assets/a.flac");
+test_file!(test_wav, "assets/a.wav");
+test_file!(test_aiff, "assets/a.aif");
+
+#[test]
+fn test_read_from_path_honours_tag_type() {
+    let tmp = Builder::new().suffix(".xyz").tempfile().unwrap();
+    fs::copy("assets/a.mp3", &tmp).unwrap();
+
+    let tag = Tag::default()
+        .with_tag_type(audiotags::TagType::Id3v2)
+        .read_from_path(tmp.path())
+        .expect("should use explicit tag type, not file extension");
+
+    assert_eq!(tag.date().unwrap().year, 2013);
+}

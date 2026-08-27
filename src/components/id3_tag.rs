@@ -154,7 +154,7 @@ impl AudioTagEdit for Id3v2Tag {
         self.inner.remove_album_artist();
     }
 
-    fn album_cover(&self) -> Option<Picture> {
+    fn album_cover(&self) -> Option<Picture<'_>> {
         self.inner
             .pictures()
             .find(|&pic| matches!(pic.picture_type, id3::frame::PictureType::CoverFront))
