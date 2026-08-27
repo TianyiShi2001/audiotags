@@ -167,7 +167,7 @@ impl AudioTagEdit for Mp4Tag {
 
     // Return Option with duration in second
     fn duration(&self) -> Option<f64> {
-        self.inner.duration().map(|d| d.as_secs_f64())
+        Some(self.inner.duration().as_secs_f64())
     }
 
     fn album_title(&self) -> Option<&str> {
