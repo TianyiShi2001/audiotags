@@ -250,7 +250,7 @@ impl AudioTagEdit for Id3v2Tag {
                 Content::Text(text) => text.parse::<u8>().ok(),
                 _ => None,
             })
-            .map_or(false, |n| n == 1)
+            == Some(1)
     }
     fn set_compilation(&mut self, compilation: bool) {
         if compilation {

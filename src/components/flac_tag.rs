@@ -278,7 +278,7 @@ impl AudioTagEdit for FlacTag {
     fn compilation(&self) -> bool {
         self.get_first("COMPILATION")
             .and_then(|v| v.parse::<u8>().ok())
-            .map_or(false, |n| n == 1)
+            == Some(1)
     }
     fn set_compilation(&mut self, compilation: bool) {
         if compilation {
