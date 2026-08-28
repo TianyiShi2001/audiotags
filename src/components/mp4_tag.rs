@@ -27,6 +27,7 @@ impl<'a> From<&'a Mp4Tag> for AnyTag<'a> {
         let total_discs = b;
         let genre = inp.genre();
         let composer = inp.composer();
+        let compilation = inp.compilation();
         let comment = inp.comment();
         Self {
             config: inp.config,
@@ -44,6 +45,7 @@ impl<'a> From<&'a Mp4Tag> for AnyTag<'a> {
             total_discs,
             genre,
             composer,
+            compilation,
             comment,
         }
     }
@@ -81,6 +83,9 @@ impl<'a> From<AnyTag<'a>> for Mp4Tag {
                 }
                 if let Some(v) = inp.total_discs() {
                     t.set_total_discs(v)
+                }
+                if inp.compilation() {
+                    t.set_compilation()
                 }
                 t
             },
@@ -302,6 +307,20 @@ impl AudioTagEdit for Mp4Tag {
     }
     fn remove_genre(&mut self) {
         self.inner.remove_genres();
+    }
+
+    fn compilation(&self) -> bool {
+        self.inner.compilation()
+    }
+    fn set_compilation(&mut self, compilation: bool) {
+        if compilation {
+            self.inner.set_compilation();
+        } else {
+            self.inner.remove_compilation();
+        }
+    }
+    fn remove_compilation(&mut self) {
+        self.inner.remove_compilation();
     }
 
     fn comment(&self) -> Option<&str> {

@@ -24,6 +24,7 @@ impl<'a> From<&'a Id3v2Tag> for AnyTag<'a> {
             total_discs: inp.total_discs(),
             genre: inp.genre(),
             composer: inp.composer(),
+            compilation: inp.compilation(),
             comment: inp.comment(),
         }
     }
@@ -67,6 +68,9 @@ impl<'a> From<AnyTag<'a>> for Id3v2Tag {
                 }
                 if let Some(v) = inp.genre() {
                     t.set_genre(v)
+                }
+                if inp.compilation() {
+                    t.add_frame(Frame::text("TCMP", "1"));
                 }
                 t
             },
@@ -237,6 +241,26 @@ impl AudioTagEdit for Id3v2Tag {
     }
     fn remove_genre(&mut self) {
         self.inner.remove_genre();
+    }
+
+    fn compilation(&self) -> bool {
+        self.inner
+            .get("TCMP")
+            .and_then(|frame| match Frame::content(frame) {
+                Content::Text(text) => text.parse::<u8>().ok(),
+                _ => None,
+            })
+            == Some(1)
+    }
+    fn set_compilation(&mut self, compilation: bool) {
+        if compilation {
+            self.inner.add_frame(Frame::text("TCMP", "1"));
+        } else {
+            self.inner.remove("TCMP");
+        }
+    }
+    fn remove_compilation(&mut self) {
+        self.inner.remove("TCMP");
     }
 
     fn comment(&self) -> Option<&str> {

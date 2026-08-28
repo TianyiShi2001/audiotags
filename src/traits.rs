@@ -140,6 +140,10 @@ pub trait AudioTagEdit: AudioTagConfig {
     fn set_genre(&mut self, genre: &str);
     fn remove_genre(&mut self);
 
+    fn compilation(&self) -> bool;
+    fn set_compilation(&mut self, compilation: bool);
+    fn remove_compilation(&mut self);
+
     fn comment(&self) -> Option<&str>;
     fn set_comment(&mut self, genre: String);
     fn remove_comment(&mut self);

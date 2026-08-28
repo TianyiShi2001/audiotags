@@ -18,6 +18,7 @@ pub struct AnyTag<'a> {
     pub total_discs: Option<u16>,
     pub genre: Option<&'a str>,
     pub composer: Option<&'a str>,
+    pub compilation: bool,
     pub comment: Option<&'a str>,
 }
 
@@ -79,6 +80,12 @@ impl<'a> AnyTag<'a> {
     }
     pub fn composer(&self) -> Option<&str> {
         self.composer
+    }
+    pub fn compilation(&self) -> bool {
+        self.compilation
+    }
+    pub fn set_compilation(&mut self, compilation: bool) {
+        self.compilation = compilation;
     }
     pub fn comment(&self) -> Option<&str> {
         self.comment

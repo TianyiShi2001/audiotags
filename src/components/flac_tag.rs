@@ -40,6 +40,9 @@ impl<'a> From<AnyTag<'a>> for FlacTag {
         if let Some(v) = inp.total_discs() {
             t.set_total_discs(v)
         }
+        if inp.compilation() {
+            t.set_compilation(true)
+        }
         t
     }
 }
@@ -61,6 +64,7 @@ impl<'a> From<&'a FlacTag> for AnyTag<'a> {
             total_discs: inp.total_discs(),
             genre: inp.genre(),
             composer: inp.composer(),
+            compilation: inp.compilation(),
             comment: inp.comment(),
             ..Self::default()
         };
@@ -269,6 +273,22 @@ impl AudioTagEdit for FlacTag {
     }
     fn remove_genre(&mut self) {
         self.remove("GENRE");
+    }
+
+    fn compilation(&self) -> bool {
+        self.get_first("COMPILATION")
+            .and_then(|v| v.parse::<u8>().ok())
+            == Some(1)
+    }
+    fn set_compilation(&mut self, compilation: bool) {
+        if compilation {
+            self.set_first("COMPILATION", "1");
+        } else {
+            self.remove("COMPILATION");
+        }
+    }
+    fn remove_compilation(&mut self) {
+        self.remove("COMPILATION");
     }
 
     fn comment(&self) -> Option<&str> {
